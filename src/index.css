@@ -1,0 +1,70 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+    font-family: "Roboto", serif;
+    background: rgba(0, 0, 0, 0.1);
+}
+
+.ReactCollapse--collapse {
+    transition: height 500ms;
+}
+
+.bg-blue {
+    background: #3872fa !important;
+}
+
+.filters .MuiButtonBase-root {
+    border: 1px solid !important
+}
+
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    margin: 0;
+}
+
+/* Global Scrollbar Styles for All Scrollable Areas */
+
+/* For Webkit Browsers (Chrome, Safari, Edge) */
+*::-webkit-scrollbar {
+    width: 8px;
+    /* Width of the vertical scrollbar */
+    height: 8px;
+    /* Height of the horizontal scrollbar */
+}
+
+*::-webkit-scrollbar-track {
+    background: #f0f0f0;
+    /* Light gray background for the scrollbar track */
+    border-radius: 4px;
+    /* Rounded edges for the track */
+}
+
+*::-webkit-scrollbar-thumb {
+    background-color: lightgray;
+    /* Light gray color for the scrollbar thumb */
+    border-radius: 4px;
+    /* Rounded edges for the thumb */
+    border: 2px solid #f0f0f0;
+    /* Small border around the thumb */
+}
+
+/* For Firefox */
+* {
+    scrollbar-width: thin;
+    /* Thinner scrollbar */
+    scrollbar-color: lightgray #f0f0f0;
+    /* Thumb color and track color */
+}
+
+a.active button {
+    background: #dcdcdc !important;
+}
+
+.MuiButton-icon svg {
+    font-size: 27px !important;
+}
