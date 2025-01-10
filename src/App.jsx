@@ -1,7 +1,7 @@
-import React, { createContext, useState } from 'react'
+import React, { createContext, useEffect, useState } from 'react'
 
 import './App.css'
-import { createBrowserRouter, RouterProvider } from 'react-router-dom'
+import { createBrowserRouter, RouterProvider, Navigate } from 'react-router-dom'
 import Dashboard from './Pages/Dashboard'
 import Header from './Header'
 import Sidebar from './Components/Sidebar'
@@ -29,168 +29,267 @@ import AddCategory from './Pages/Category/AddCategory'
 import Category from './Pages/Category'
 import User from './Pages/User'
 import AddUser from './Pages/User/AddUser'
-
-
+import PrivateRoute from './PrivateRoute'; // Import the PrivateRoute component
+import toast, { Toaster } from 'react-hot-toast';
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
 const Mycontext = createContext(); // Create context
 function App() {
+  const notify = () => toast.success('Successfully created!');
+
+
+  const [authToken, setAuthToken] = useState(null);
   const [isLogin, setIsLogin] = useState(false);
+  useEffect(() => {
+    const token = localStorage.getItem('authToken');
+    if (token) {
+      setIsLogin(true);
+      setAuthToken(token);
+    } else {
+      setIsLogin(false);
+    }
+  }, []);
   const [isSidebarOpenMenu, setIsSidebarOpenMenu] = useState(true);
   const [isOpenFullScreenPanel, setIsOpenFullScreenPanel] = useState({
     open: false,
     model: ''
   })
+
+  const messageBox = ({ status, msg }) => {
+    if (status === 'success') {
+      toast.success(msg);
+    } else {
+      toast.error(msg);
+    }
+  }
   const value = {
     isSidebarOpenMenu,
     setIsSidebarOpenMenu,
     isOpenFullScreenPanel,
     setIsOpenFullScreenPanel,
     setIsLogin,
-    isLogin
+    isLogin,
+    messageBox
   }
+  // const router = createBrowserRouter([
+  //   {
+  //     path: "/",
+  //     exact: true,
+  //     element:
+  //       <>
+  //         <section className='main'>
+  //           <Header />
+  //           <div className='contentMain flex'>
+  //             <div className={`sidebarWrapper  border  ${isSidebarOpenMenu === true ? 'w-[20%] z-50' : 'w-[0px] opacity-0 overflow-hidden '} transition-all duration-300`}>
+  //               <Sidebar />
+  //             </div>
+  //             <div className={`rightSidePanel px-6 py-3 ${isSidebarOpenMenu === true ? 'w-[80%]' : 'w-[100%]'} transition-all duration-300`}>
+  //               <Dashboard />
+  //             </div>
+  //           </div>
+  //         </section>
+  //       </>
+  //   },
+  //   {
+  //     path: "/products",
+  //     exact: true,
+  //     element:
+  //       <>
+  //         <section className="main">
+  //           <Header />
+  //           <div className="contentMain flex">
+  //             <div
+  //               className={`sidebarWrapper border ${isSidebarOpenMenu
+  //                 ? 'w-[20%] z-50'
+  //                 : 'w-[0px] opacity-0 overflow-hidden'
+  //                 } transition-all duration-300`}
+  //             >
+  //               <Sidebar />
+  //             </div>
+  //             <div
+  //               className={`rightSidePanel px-6 py-3 ${isSidebarOpenMenu ? 'w-[80%]' : 'w-[100%]'
+  //                 } transition-all duration-300`}
+  //             >
+  //               <Product />
+  //             </div>
+  //           </div>
+  //         </section>
+  //       </>
+  //   },
+  //   {
+  //     path: "/homeslider/list",
+  //     exact: true,
+  //     element:
+  //       <>
+  //         <section className="main">
+  //           <Header />
+  //           <div className="contentMain flex">
+  //             <div
+  //               className={`sidebarWrapper border ${isSidebarOpenMenu
+  //                 ? 'w-[20%] z-50'
+  //                 : 'w-[0px] opacity-0 overflow-hidden'
+  //                 } transition-all duration-300`}
+  //             >
+  //               <Sidebar />
+  //             </div>
+  //             <div
+  //               className={`rightSidePanel px-6 py-3 ${isSidebarOpenMenu ? 'w-[80%]' : 'w-[100%]'
+  //                 } transition-all duration-300`}
+  //             >
+  //               <HomeSliderBaners />
+  //             </div>
+  //           </div>
+  //         </section>
+  //       </>
+  //   },
+  //   {
+  //     path: "/category/list",
+  //     exact: true,
+  //     element:
+  //       <>
+  //         <section className="main">
+  //           <Header />
+  //           <div className="contentMain flex">
+  //             <div
+  //               className={`sidebarWrapper border ${isSidebarOpenMenu
+  //                 ? 'w-[20%] z-50'
+  //                 : 'w-[0px] opacity-0 overflow-hidden'
+  //                 } transition-all duration-300`}
+  //             >
+  //               <Sidebar />
+  //             </div>
+  //             <div
+  //               className={`rightSidePanel px-6 py-3 ${isSidebarOpenMenu ? 'w-[80%]' : 'w-[100%]'
+  //                 } transition-all duration-300`}
+  //             >
+  //               <Category />
+  //             </div>
+  //           </div>
+  //         </section>
+  //       </>
+  //   },
+  //   {
+  //     path: "/user/list",
+  //     exact: true,
+  //     element:
+  //       <>
+  //         <section className="main">
+  //           <Header />
+  //           <div className="contentMain flex">
+  //             <div
+  //               className={`sidebarWrapper border ${isSidebarOpenMenu
+  //                 ? 'w-[20%] z-50'
+  //                 : 'w-[0px] opacity-0 overflow-hidden'
+  //                 } transition-all duration-300`}
+  //             >
+  //               <Sidebar />
+  //             </div>
+  //             <div
+  //               className={`rightSidePanel px-6 py-3 ${isSidebarOpenMenu ? 'w-[80%]' : 'w-[100%]'
+  //                 } transition-all duration-300`}
+  //             >
+  //               <User />
+  //             </div>
+  //           </div>
+  //         </section>
+  //       </>
+  //   },
+  //   {
+  //     path: "/login",
+  //     exact: true,
+  //     element:
+  //       <>
+  //         <Login />
+  //       </>
+  //   },
+  //   {
+  //     path: "/signup",
+  //     exact: true,
+  //     element:
+  //       <>
+  //         <SignUp />
+  //       </>
+  //   }
+  // ])
+
+
   const router = createBrowserRouter([
     {
       path: "/",
-      exact: true,
-      element:
-        <>
+      element: (
+        <PrivateRoute>
           <section className='main'>
+
             <Header />
             <div className='contentMain flex'>
               <div className={`sidebarWrapper  border  ${isSidebarOpenMenu === true ? 'w-[20%] z-50' : 'w-[0px] opacity-0 overflow-hidden '} transition-all duration-300`}>
                 <Sidebar />
               </div>
               <div className={`rightSidePanel px-6 py-3 ${isSidebarOpenMenu === true ? 'w-[80%]' : 'w-[100%]'} transition-all duration-300`}>
+
                 <Dashboard />
               </div>
             </div>
           </section>
-        </>
+        </PrivateRoute>
+      )
     },
     {
       path: "/products",
-      exact: true,
-      element:
-        <>
+      element: (
+        <PrivateRoute>
           <section className="main">
             <Header />
             <div className="contentMain flex">
-              <div
-                className={`sidebarWrapper border ${isSidebarOpenMenu
-                  ? 'w-[20%] z-50'
-                  : 'w-[0px] opacity-0 overflow-hidden'
-                  } transition-all duration-300`}
-              >
+              <div className={`sidebarWrapper border ${isSidebarOpenMenu ? 'w-[20%] z-50' : 'w-[0px] opacity-0 overflow-hidden'} transition-all duration-300`}>
                 <Sidebar />
               </div>
-              <div
-                className={`rightSidePanel px-6 py-3 ${isSidebarOpenMenu ? 'w-[80%]' : 'w-[100%]'
-                  } transition-all duration-300`}
-              >
+              <div className={`rightSidePanel px-6 py-3 ${isSidebarOpenMenu ? 'w-[80%]' : 'w-[100%]'} transition-all duration-300`}>
                 <Product />
               </div>
             </div>
           </section>
-        </>
+        </PrivateRoute>
+      )
     },
     {
       path: "/homeslider/list",
-      exact: true,
-      element:
-        <>
+      element: (
+        <PrivateRoute>
           <section className="main">
             <Header />
             <div className="contentMain flex">
-              <div
-                className={`sidebarWrapper border ${isSidebarOpenMenu
-                  ? 'w-[20%] z-50'
-                  : 'w-[0px] opacity-0 overflow-hidden'
-                  } transition-all duration-300`}
-              >
+              <div className={`sidebarWrapper border ${isSidebarOpenMenu ? 'w-[20%] z-50' : 'w-[0px] opacity-0 overflow-hidden'} transition-all duration-300`}>
                 <Sidebar />
               </div>
-              <div
-                className={`rightSidePanel px-6 py-3 ${isSidebarOpenMenu ? 'w-[80%]' : 'w-[100%]'
-                  } transition-all duration-300`}
-              >
+              <div className={`rightSidePanel px-6 py-3 ${isSidebarOpenMenu ? 'w-[80%]' : 'w-[100%]'} transition-all duration-300`}>
                 <HomeSliderBaners />
               </div>
             </div>
           </section>
-        </>
+        </PrivateRoute>
+      )
     },
-    {
-      path: "/category/list",
-      exact: true,
-      element:
-        <>
-          <section className="main">
-            <Header />
-            <div className="contentMain flex">
-              <div
-                className={`sidebarWrapper border ${isSidebarOpenMenu
-                  ? 'w-[20%] z-50'
-                  : 'w-[0px] opacity-0 overflow-hidden'
-                  } transition-all duration-300`}
-              >
-                <Sidebar />
-              </div>
-              <div
-                className={`rightSidePanel px-6 py-3 ${isSidebarOpenMenu ? 'w-[80%]' : 'w-[100%]'
-                  } transition-all duration-300`}
-              >
-                <Category />
-              </div>
-            </div>
-          </section>
-        </>
-    },
-    {
-      path: "/user/list",
-      exact: true,
-      element:
-        <>
-          <section className="main">
-            <Header />
-            <div className="contentMain flex">
-              <div
-                className={`sidebarWrapper border ${isSidebarOpenMenu
-                  ? 'w-[20%] z-50'
-                  : 'w-[0px] opacity-0 overflow-hidden'
-                  } transition-all duration-300`}
-              >
-                <Sidebar />
-              </div>
-              <div
-                className={`rightSidePanel px-6 py-3 ${isSidebarOpenMenu ? 'w-[80%]' : 'w-[100%]'
-                  } transition-all duration-300`}
-              >
-                <User />
-              </div>
-            </div>
-          </section>
-        </>
-    },
+    // Other routes remain the same...
     {
       path: "/login",
-      exact: true,
-      element:
+      element: (
         <>
           <Login />
         </>
+      )
     },
     {
       path: "/signup",
-      exact: true,
-      element:
+      element: (
         <>
           <SignUp />
         </>
+      )
     }
-  ])
+  ]);
   return (
     <>
       <Mycontext.Provider value={value}>
@@ -224,6 +323,8 @@ function App() {
           {isOpenFullScreenPanel?.model === 'Add Slider' && <AddHomeSlide />}
           {isOpenFullScreenPanel?.model === 'Add Category' && <AddCategory />}
         </Dialog>
+
+        <Toaster />
       </Mycontext.Provider >
     </>
   )

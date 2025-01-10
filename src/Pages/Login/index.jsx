@@ -1,6 +1,6 @@
 import { Button } from '@mui/material'
-import React from 'react'
-import { Link, NavLink } from 'react-router-dom'
+import React, { useContext } from 'react'
+import { Link, Navigate, NavLink } from 'react-router-dom'
 import { FiLogIn } from "react-icons/fi";
 import { FaRegUser } from "react-icons/fa";
 import LoadingButton from '@mui/lab/LoadingButton';
@@ -9,8 +9,15 @@ import { FcGoogle } from "react-icons/fc";
 import { BsFacebook } from "react-icons/bs";
 import { IoEye } from "react-icons/io5";
 import { IoEyeOff } from "react-icons/io5";
-
+import { Mycontext } from '../../App';
+import { PostALL } from '../../utils/api';
+import axios from 'axios';
 const Login = () => {
+
+    const { isLogin, setIsLogin, messageBox } = useContext(Mycontext);
+    if (isLogin) {
+        return <Navigate to="/" />;
+    }
     const [loadingGoogle, setLoadingGoogle] = useState(false);
     const [loadingFacebook, setLoadingFacebook] = useState(false);
     const [isPassword, setIsPassword] = useState(false)
@@ -19,6 +26,35 @@ const Login = () => {
     }
     function handleClickFacebook() {
         setLoadingFacebook(true);
+    }
+
+    const handleClickForm = async (e) => {
+        e.preventDefault();
+        const formData = new FormData(e.target);
+        const email = formData.get('email');
+        const password = formData.get('password');
+
+        if (!email || !password) {
+            alert('Both email and password are required');
+            return; // Early return in case of invalid form data
+        }
+        try {
+            const data = { email, password };
+            const response = await PostALL(data, 'user/login');
+            if (response.success) {
+                localStorage.setItem('authToken', response.token);
+                setIsLogin(true);
+                messageBox({ status: 'success', msg: 'Login successful' })
+                console.log(response.data)
+                console.log('Login successful');
+            } else {
+                console.log(response)
+                messageBox({ status: 'error', msg: response.error })
+            }
+        } catch (error) {
+            console.log(error)
+            alert('Login Error:', error)
+        }
     }
     return (
         <section className='bg-white w-full h-full '>
@@ -83,17 +119,18 @@ const Login = () => {
                     <span className='flex items-center w-[100px] h-[1px] bg-[rgba(0,0,0,0.1)]'></span>
                 </div>
 
-                <form className='loginform mx-16'>
+                <form className='loginform mx-16' onSubmit={handleClickForm}>
                     <div className='w-full mt-3'>
                         <div className='form-group mb-4 w-full'>
                             <h4 className='text-[14px] font-[500] mb-1'>Email</h4>
-                            <input type="email" className='w-full h-[45px] focus:outline-none focus:border-[rgba(0,0,0,0.7)] border border-[rgba(0,0,0,0.1)] rounded-md px-3' />
+                            <input type="email" name="email" className='w-full h-[45px] focus:outline-none focus:border-[rgba(0,0,0,0.7)] border border-[rgba(0,0,0,0.1)] rounded-md px-3' />
                         </div>
                         <div className='form-group mb-4 w-full'>
                             <h4 className='text-[14px] font-[500] mb-1'>Password</h4>
                             <div className='relative w-full'>
                                 <input
                                     type={`${isPassword === false ? 'password' : 'text'}`}
+                                    name="password"
                                     className='w-full h-[45px] focus:outline-none focus:border-[rgba(0,0,0,0.7)] border border-[rgba(0,0,0,0.1)] rounded-md px-3' />
                                 <Button className='!absolute !min-w-[10px] !bg-transparent !text-[rgba(0,0,0,0.8)] !top-[10px] right-0' onClick={() => setIsPassword(!isPassword)}>
                                     {isPassword === true ?
@@ -104,7 +141,7 @@ const Login = () => {
                             </div>
                         </div>
                         <br />
-                        <Button className='!w-full !bg-[rgba(0,0,0,0.8)] !capitalize !text-white'>Sign In</Button>
+                        <Button type="submit" className='!w-full !bg-[rgba(0,0,0,0.8)] !capitalize !text-white'>Sign In</Button>
                     </div>
                 </form>
                 <br />
