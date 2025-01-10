@@ -36,12 +36,12 @@ const Sidebar = () => {
                     </Link>
                 </li>
                 <li>
-                    <Link to="/">
-                        <Button className='!w-full !capitalize !text-black !justify-start flex gap-3 !text-[16px] !font-[500] hover:text-black hover:bg-[rgba(0,0,0,0.1)] !py-2' onClick={() => IsOpenSubMenu(1)}>
-                            <FaRegImage className='text-[18px]' /><span>Home Slides</span>
-                            <span className='ml-auto flex items-center justify-center w-[30px] h-[30px]'><IoIosArrowDown className={`transition-all ${subMenuIndex === 1 ? 'rotate-180' : ''}`} /></span>
-                        </Button>
-                    </Link>
+
+                    <Button className='!w-full !capitalize !text-black !justify-start flex gap-3 !text-[16px] !font-[500] hover:text-black hover:bg-[rgba(0,0,0,0.1)] !py-2' onClick={() => IsOpenSubMenu(1)}>
+                        <FaRegImage className='text-[18px]' /><span>Home Slides</span>
+                        <span className='ml-auto flex items-center justify-center w-[30px] h-[30px]'><IoIosArrowDown className={`transition-all ${subMenuIndex === 1 ? 'rotate-180' : ''}`} /></span>
+                    </Button>
+
                     <Collapse isOpened={subMenuIndex === 1 ? true : false}>
                         <ul className='w-full'>
                             <li className='w-full'>
@@ -71,59 +71,58 @@ const Sidebar = () => {
                     </Link>
                 </li>
                 <li>
-                    <Link to="/">
-                        <Button className='!w-full !capitalize !text-black !justify-start flex gap-3 !text-[16px] !font-[500] hover:text-black hover:bg-[rgba(0,0,0,0.1)] !py-2' onClick={() => IsOpenSubMenu(2)}>
-                            <FaProductHunt className='text-[18px]' /><span>Products</span>
-                            <span className='ml-auto flex items-center justify-center w-[30px] h-[30px]'><IoIosArrowDown className={`transition-all ${subMenuIndex === 2 ? 'rotate-180' : ''}`} /></span>
-                        </Button>
-                        <Collapse isOpened={subMenuIndex === 2 ? true : false}>
-                            <ul className='w-full'>
-                                <li className='w-full'>
-                                    <Link to="/products">
-                                        <Button className='!text-[rgba(0,0,0,0.7)] !capitalize !justify-start !w-full !pl-9 flex gap-2'>
-                                            <span className='block w-[5px] h-[5px] rounded-full bg-[rgba(0,0,0,0.3)]'></span>
-                                            Product List</Button>
-                                    </Link>
-                                </li>
-                                <li className='w-full'>
-                                    <Link to="/">
-                                        <Button className='!text-[rgba(0,0,0,0.7)] !capitalize !justify-start !w-full !pl-9 flex gap-2'>
-                                            <span className='block w-[5px] h-[5px] rounded-full bg-[rgba(0,0,0,0.3)]'></span>
-                                            Add Product</Button>
-                                    </Link>
-                                </li>
 
-                            </ul>
-                        </Collapse>
+                    <Button className='!w-full !capitalize !text-black !justify-start flex gap-3 !text-[16px] !font-[500] hover:text-black hover:bg-[rgba(0,0,0,0.1)] !py-2' onClick={() => IsOpenSubMenu(2)}>
+                        <FaProductHunt className='text-[18px]' /><span>Products</span>
+                        <span className='ml-auto flex items-center justify-center w-[30px] h-[30px]'><IoIosArrowDown className={`transition-all ${subMenuIndex === 2 ? 'rotate-180' : ''}`} /></span>
+                    </Button>
+                    <Collapse isOpened={subMenuIndex === 2 ? true : false}>
+                        <ul className='w-full'>
+                            <li className='w-full'>
+                                <Link to="/products">
+                                    <Button className='!text-[rgba(0,0,0,0.7)] !capitalize !justify-start !w-full !pl-9 flex gap-2'>
+                                        <span className='block w-[5px] h-[5px] rounded-full bg-[rgba(0,0,0,0.3)]'></span>
+                                        Product List</Button>
+                                </Link>
+                            </li>
+                            <li className='w-full'>
+                                <Link to="/">
+                                    <Button className='!text-[rgba(0,0,0,0.7)] !capitalize !justify-start !w-full !pl-9 flex gap-2'>
+                                        <span className='block w-[5px] h-[5px] rounded-full bg-[rgba(0,0,0,0.3)]'></span>
+                                        Add Product</Button>
+                                </Link>
+                            </li>
 
-                    </Link>
+                        </ul>
+                    </Collapse>
+
+
                 </li>
                 <li>
-                    <Link to="/">
-                        <Button className='!w-full !capitalize !text-black !justify-start flex gap-3 !text-[16px] !font-[500] hover:text-black hover:bg-[rgba(0,0,0,0.1)] !py-2' onClick={() => IsOpenSubMenu(3)}><TbCategory className='text-[18px]' /><span>Category</span>
-                            <span className='ml-auto flex items-center justify-center w-[30px] h-[30px]'><IoIosArrowDown className={`transition-all ${subMenuIndex === 3 ? 'rotate-180' : ''}`} /></span>
-                        </Button>
-                        <Collapse isOpened={subMenuIndex === 3 ? true : false}>
-                            <ul className='w-full'>
-                                <li className='w-full'>
-                                    <Link to="/category/list">
-                                        <Button className='!text-[rgba(0,0,0,0.7)] !capitalize !justify-start !w-full !pl-9 flex gap-2'>
-                                            <span className='block w-[5px] h-[5px] rounded-full bg-[rgba(0,0,0,0.3)]'></span>
-                                            Category List</Button>
-                                    </Link>
-                                </li>
-                                <li className='w-full'>
-                                    <Link to="/">
-                                        <Button className='!text-[rgba(0,0,0,0.7)] !capitalize !justify-start !w-full !pl-9 flex gap-2'>
-                                            <span className='block w-[5px] h-[5px] rounded-full bg-[rgba(0,0,0,0.3)]'></span>
-                                            Add Category</Button>
-                                    </Link>
-                                </li>
 
-                            </ul>
-                        </Collapse>
+                    <Button className='!w-full !capitalize !text-black !justify-start flex gap-3 !text-[16px] !font-[500] hover:text-black hover:bg-[rgba(0,0,0,0.1)] !py-2' onClick={() => IsOpenSubMenu(3)}><TbCategory className='text-[18px]' /><span>Category</span>
+                        <span className='ml-auto flex items-center justify-center w-[30px] h-[30px]'><IoIosArrowDown className={`transition-all ${subMenuIndex === 3 ? 'rotate-180' : ''}`} /></span>
+                    </Button>
+                    <Collapse isOpened={subMenuIndex === 3 ? true : false}>
+                        <ul className='w-full'>
+                            <li className='w-full'>
+                                <Link to="/category/list">
+                                    <Button className='!text-[rgba(0,0,0,0.7)] !capitalize !justify-start !w-full !pl-9 flex gap-2'>
+                                        <span className='block w-[5px] h-[5px] rounded-full bg-[rgba(0,0,0,0.3)]'></span>
+                                        Category List</Button>
+                                </Link>
+                            </li>
+                            <li className='w-full'>
+                                <Link to="/">
+                                    <Button className='!text-[rgba(0,0,0,0.7)] !capitalize !justify-start !w-full !pl-9 flex gap-2'>
+                                        <span className='block w-[5px] h-[5px] rounded-full bg-[rgba(0,0,0,0.3)]'></span>
+                                        Add Category</Button>
+                                </Link>
+                            </li>
 
-                    </Link>
+                        </ul>
+                    </Collapse>
+
                 </li>
                 <li>
                     <Link to="/">

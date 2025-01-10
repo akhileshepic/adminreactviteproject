@@ -15,9 +15,7 @@ import axios from 'axios';
 const Login = () => {
 
     const { isLogin, setIsLogin, messageBox } = useContext(Mycontext);
-    if (isLogin) {
-        return <Navigate to="/" />;
-    }
+
     const [loadingGoogle, setLoadingGoogle] = useState(false);
     const [loadingFacebook, setLoadingFacebook] = useState(false);
     const [isPassword, setIsPassword] = useState(false)
@@ -55,6 +53,10 @@ const Login = () => {
             console.log(error)
             alert('Login Error:', error)
         }
+    }
+
+    if (isLogin) {
+        return <Navigate to="/" replace />; // Redirect to home page
     }
     return (
         <section className='bg-white w-full h-full '>

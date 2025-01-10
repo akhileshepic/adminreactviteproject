@@ -1,12 +1,15 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import DashboarBox from '../../Components/DashboarBox'
 import { Button } from '@mui/material'
 import { FaPlus } from "react-icons/fa6";
 import RecentOrder from '../../Components/DashboarBox/RecentOrder/RecentOrder';
 import ProductItem from '../../Components/ProductItem';
 import PiChart from '../../Components/DashboarBox/PiChart';
+import { Mycontext } from '../../App';
+import { Navigate } from 'react-router-dom';
 
 const Dashboard = () => {
+
     return (
         <div className='dashboardRoot'>
 

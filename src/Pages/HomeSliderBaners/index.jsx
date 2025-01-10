@@ -1,11 +1,11 @@
 import { Button } from '@mui/material'
-import React, { useContext, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 
 import { CiFilter } from "react-icons/ci";
 import { CiEdit } from "react-icons/ci";
 import { FaRegEye } from "react-icons/fa6";
 import { RiDeleteBin6Line } from "react-icons/ri";
-
+const baseUrl = import.meta.env.VITE_BASE_FILE_URL;
 import {
     Checkbox,
     Table,
@@ -19,16 +19,39 @@ import {
 
 } from '@mui/material';
 import { Mycontext } from '../../App';
+import { getAll } from '../../utils/api';
+import { Navigate } from 'react-router-dom';
 const HomeSliderBaners = () => {
-    const context = useContext(Mycontext)
-    const initialProducts = [
-        { id: 1, image: 'https://isomorphic-furyroad.s3.amazonaws.com/public/products/modern/7.webp' },
-        { id: 2, image: 'https://isomorphic-furyroad.s3.amazonaws.com/public/products/modern/7.webp' },
-        { id: 3, image: 'https://isomorphic-furyroad.s3.amazonaws.com/public/products/modern/7.webp' },
-    ];
+
+
+
 
     // State management
-    const [homeSlider, setHomeSlider] = useState(initialProducts);
+    const [homeSlider, setHomeSlider] = useState([]);
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const response = await getAll('slider');
+                console.log(response);
+                if (response.success) {
+
+                    setHomeSlider(response.data);
+
+                } else {
+                    context.messageBox({ status: 'error', msg: response.error });
+                }
+            } catch (error) {
+                console.log(error);
+                alert('Login Error: ' + error);
+            }
+        };
+
+        fetchData();
+        console.log(homeSlider)
+    }, []);
+
+
+
     const [selected, setSelected] = useState([]);
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(5);
@@ -125,7 +148,7 @@ const HomeSliderBaners = () => {
                                 {homeSlider
                                     .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                                     .map((product) => {
-                                        const isItemSelected = isSelected(product.id);
+                                        const isItemSelected = isSelected(product._id);
                                         return (
                                             <TableRow
                                                 hover
@@ -144,7 +167,7 @@ const HomeSliderBaners = () => {
                                                 <TableCell>
                                                     <div className='flex items-center gap-4 '>
                                                         <img
-                                                            src={product.image}
+                                                            src={`${baseUrl}${product.image}`}
                                                             alt={product.name}
                                                             style={{ width: 300, height: 50, borderRadius: 5 }}
                                                         />
@@ -152,7 +175,7 @@ const HomeSliderBaners = () => {
                                                     </div>
                                                 </TableCell>
                                                 <TableCell align="center">
-                                                    <Button className='!min-w-[20px] !w-[35px] !text-black' onClick={() => handleEdit(product.id)} >
+                                                    <Button className='!min-w-[20px] !w-[35px] !text-black' onClick={() => handleEdit(product._id)} >
                                                         <CiEdit className='text-[20px]' />
                                                     </Button>
                                                     <Button className='!min-w-[20px] !w-[35px] !text-black'>

@@ -39,17 +39,18 @@ const Mycontext = createContext(); // Create context
 function App() {
   const notify = () => toast.success('Successfully created!');
 
-  const [isLogin, setIsLogin] = useState(false);
-  const [token, setToken] = useState(localStorage.getItem('authToken'));
 
+  const [authToken, setAuthToken] = useState(null);
+  const [isLogin, setIsLogin] = useState(false);
   useEffect(() => {
-    const token = localStorage.getItem('authToken'); // Retrieve token from localStorage
+    const token = localStorage.getItem('authToken');
     if (token) {
       setIsLogin(true);
+      setAuthToken(token);
+    } else {
+      setIsLogin(false);
     }
   }, []);
-
-
   const [isSidebarOpenMenu, setIsSidebarOpenMenu] = useState(true);
   const [isOpenFullScreenPanel, setIsOpenFullScreenPanel] = useState({
     open: false,
@@ -70,8 +71,7 @@ function App() {
     setIsOpenFullScreenPanel,
     setIsLogin,
     isLogin,
-    messageBox,
-    token
+    messageBox
   }
   // const router = createBrowserRouter([
   //   {
