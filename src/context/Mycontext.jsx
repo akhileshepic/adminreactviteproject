@@ -1,5 +1,7 @@
 import { createContext, useContext, useEffect, useState } from "react";
 
+import axios from 'axios';
+const baseUrl = import.meta.env.VITE_BASE_URL;
 import toast, { Toaster } from 'react-hot-toast';
 const Mycontext = createContext();
 
@@ -42,7 +44,46 @@ const MyContextProvider = ({ children }) => {
         }
     }, [isAuth]);
 
+    const getAll = async (url) => {
 
+        const token = isAuth?.token; // Access token
+        const headers = {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}` // Bearer token format
+        };
+        try {
+            const response = await axios.get(`${baseUrl}${url}`, { headers });
+            return response.data;
+        } catch (error) {
+
+            if (error.response) {
+                // Server responded with a status other than 2xx
+
+                return {
+                    success: false,
+                    status: error.response.status,
+                    message: error.response.data.message || "Error occurred",
+                    error: error.response.data.error || error.response.statusText,
+                };
+            } else if (error.request) {
+                // Request was made but no response was received
+                return {
+                    success: false,
+                    message: "No response from server",
+                    error: "Network error or server not reachable",
+                    status: error.response.status
+                };
+            } else {
+                // Something else caused the error
+                return {
+                    success: false,
+                    message: "Unexpected error occurred",
+                    error: error.message,
+                    status: error.response.status
+                };
+            }
+        }
+    }
 
     const messageBox = ({ status, msg }) => {
         if (status === 'success') {
@@ -61,7 +102,8 @@ const MyContextProvider = ({ children }) => {
         isAuth,
         setIsAuth,
         isLogin,
-        setLogin
+        setLogin,
+        getAll
     }
     return <Mycontext.Provider value={value}>{children}</Mycontext.Provider>;
 }

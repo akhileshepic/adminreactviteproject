@@ -19,19 +19,19 @@ import {
 
 } from '@mui/material';
 import { getAll } from '../../utils/api';
-import { Navigate } from 'react-router-dom';
-import { Mycontext } from '../../context/Mycontext';
+import { useNavigate } from 'react-router-dom';
+import { useMyContext } from '../../context/Mycontext';
 const HomeSliderBaners = () => {
 
-    const context = useContext(Mycontext)
-
+    const context = useMyContext()
+    const navigate = useNavigate();
 
     // State management
     const [homeSlider, setHomeSlider] = useState([]);
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await getAll('slider');
+                const response = await context.getAll('slider');
                 console.log(response);
                 if (response.success) {
 
@@ -39,7 +39,17 @@ const HomeSliderBaners = () => {
 
                 } else {
 
-                    context.messageBox({ status: 'error', msg: response.error });
+
+                    if (response.status === 403) {
+                        context.setIsAuth({
+                            user: null,
+                            token: ''
+                        })
+                        context.setLogin(false);
+                        navigate('/login')
+                    } else {
+                        context.messageBox({ status: 'error', msg: response.message });
+                    }
                 }
             } catch (error) {
                 console.log(error);
