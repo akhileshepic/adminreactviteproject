@@ -10,9 +10,10 @@ import { IoBagCheckOutline } from "react-icons/io5";
 import { IoMdLogOut } from "react-icons/io";
 import { IoIosArrowDown } from "react-icons/io";
 import { Collapse } from 'react-collapse';
-import { Mycontext } from '../../App';
+import { useMyContext } from '../../context/Mycontext';
+
 const Sidebar = () => {
-    const context = useContext(Mycontext)
+    const context = useMyContext()
     const [subMenuIndex, setSubMenuIndex] = useState(null);
     const IsOpenSubMenu = (index) => {
         if (subMenuIndex === index) {

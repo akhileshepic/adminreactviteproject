@@ -18,7 +18,7 @@ import {
     Paper,
 
 } from '@mui/material';
-import { Mycontext } from '../../App';
+import Mycontext from '../../App';
 const Category = () => {
     const context = useContext(Mycontext)
     const initialProducts = [

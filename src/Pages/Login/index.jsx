@@ -1,6 +1,6 @@
 import { Button } from '@mui/material'
 import React, { useContext } from 'react'
-import { Link, Navigate, NavLink } from 'react-router-dom'
+import { Link, Navigate, NavLink, useNavigate } from 'react-router-dom'
 import { FiLogIn } from "react-icons/fi";
 import { FaRegUser } from "react-icons/fa";
 import LoadingButton from '@mui/lab/LoadingButton';
@@ -9,12 +9,17 @@ import { FcGoogle } from "react-icons/fc";
 import { BsFacebook } from "react-icons/bs";
 import { IoEye } from "react-icons/io5";
 import { IoEyeOff } from "react-icons/io5";
-import { Mycontext } from '../../App';
+
 import { PostALL } from '../../utils/api';
 import axios from 'axios';
-const Login = () => {
+import { useMyContext } from '../../context/Mycontext';
 
-    const { isLogin, setIsLogin, messageBox } = useContext(Mycontext);
+const Login = () => {
+    const navigation = useNavigate();
+    const context = useMyContext();
+    if (context.isAuth.token) {
+        return <Navigate to="/" replace />;
+    }
 
     const [loadingGoogle, setLoadingGoogle] = useState(false);
     const [loadingFacebook, setLoadingFacebook] = useState(false);
@@ -39,15 +44,21 @@ const Login = () => {
         try {
             const data = { email, password };
             const response = await PostALL(data, 'user/login');
+
             if (response.success) {
-                localStorage.setItem('authToken', response.token);
-                setIsLogin(true);
-                messageBox({ status: 'success', msg: 'Login successful' })
-                console.log(response.data)
-                console.log('Login successful');
+                const userData = {
+                    user: response?.data,
+                    token: response.token
+                }
+                context.setIsAuth(userData)
+
+                context.setLogin(true)
+                context.messageBox({ status: 'success', msg: response.message })
+                navigation('/')
+
             } else {
                 console.log(response)
-                messageBox({ status: 'error', msg: response.error })
+                context.messageBox({ status: 'error', msg: response.error })
             }
         } catch (error) {
             console.log(error)
@@ -55,9 +66,6 @@ const Login = () => {
         }
     }
 
-    if (isLogin) {
-        return <Navigate to="/" replace />; // Redirect to home page
-    }
     return (
         <section className='bg-white w-full h-full '>
             <header className='w-full fixed top-0 left-0 px-2 py-3 flex items-center justify-between z-50'>

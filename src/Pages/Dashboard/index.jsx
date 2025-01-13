@@ -5,10 +5,12 @@ import { FaPlus } from "react-icons/fa6";
 import RecentOrder from '../../Components/DashboarBox/RecentOrder/RecentOrder';
 import ProductItem from '../../Components/ProductItem';
 import PiChart from '../../Components/DashboarBox/PiChart';
-import { Mycontext } from '../../App';
+
 import { Navigate } from 'react-router-dom';
+import { useMyContext } from '../../context/Mycontext';
 
 const Dashboard = () => {
+    const context = useMyContext();
 
     return (
         <div className='dashboardRoot'>

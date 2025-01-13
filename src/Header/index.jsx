@@ -10,8 +10,10 @@ import MenuItem from '@mui/material/MenuItem';
 import Divider from '@mui/material/Divider';
 import { FaRegUser } from "react-icons/fa";
 import { RiLogoutCircleRLine } from "react-icons/ri";
-import { Mycontext } from '../App';
+
 import { Link } from 'react-router-dom';
+import { useMyContext } from '../context/Mycontext';
+
 const StyledBadge = styled(Badge)(({ theme }) => ({
     '& .MuiBadge-badge': {
         right: -3,
@@ -22,7 +24,7 @@ const StyledBadge = styled(Badge)(({ theme }) => ({
 }));
 const Header = () => {
 
-    const context = useContext(Mycontext)
+    const context = useMyContext();
     const [anchorEl, setAnchorEl] = useState(null);
     const open = Boolean(anchorEl);
     const handleClick = (event) => {
@@ -30,6 +32,15 @@ const Header = () => {
     };
     const handleClose = () => {
         setAnchorEl(null);
+    };
+
+    const handlelogout = () => {
+        setAnchorEl(null);
+        context.setIsAuth({ user: null, token: '' }); // Reset the isAuth state
+        context.setLogin(false); // Set isLogin to false
+        localStorage.removeItem("isAuth"); // Remove isAuth from localStorage
+
+        context.messageBox({ status: 'success', msg: 'Logged out successfully' })
     };
     return (
         <header className={`w-full h-auto pr-7 py-2 shadow-md flex items-center justify-between bg-white ${context.isSidebarOpenMenu === true ? 'pl-72 ' : 'pl-7'} transition-all`}>
@@ -107,7 +118,7 @@ const Header = () => {
                                         <FaRegUser className='text-[16px]' /><span>Profile</span>
                                     </div>
                                 </MenuItem>
-                                <MenuItem onClick={handleClose}>
+                                <MenuItem onClick={handlelogout}>
                                     <div className='flex items-center gap-3'>
                                         <RiLogoutCircleRLine className='text-[16px]' /><span>Sign Out</span>
                                     </div>

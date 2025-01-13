@@ -18,7 +18,8 @@ import {
     Paper,
 
 } from '@mui/material';
-import { Mycontext } from '../../App';
+import { Mycontext } from '../../context/Mycontext';
+
 const User = () => {
     const context = useContext(Mycontext)
     const initialProducts = [

@@ -28,307 +28,96 @@ import AddHomeSlide from './Pages/HomeSliderBaners/AddHomeSlide'
 import AddCategory from './Pages/Category/AddCategory'
 import Category from './Pages/Category'
 import User from './Pages/User'
-import AddUser from './Pages/User/AddUser'
-import PrivateRoute from './PrivateRoute'; // Import the PrivateRoute component
+import AddUser from './Pages/User/AddUser' // Import the PrivateRoute component
 import toast, { Toaster } from 'react-hot-toast';
+
+import MainLayout from './Pages/MainLayout'
+import { useMyContext } from './context/Mycontext'
+import PrivateRoute from './PrivateRoute'
+
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
-
-const Mycontext = createContext(); // Create context
 function App() {
   const notify = () => toast.success('Successfully created!');
-
-  const [isLogin, setIsLogin] = useState(false);
-  const [token, setToken] = useState(localStorage.getItem('authToken'));
-
-  useEffect(() => {
-    const token = localStorage.getItem('authToken'); // Retrieve token from localStorage
-    if (token) {
-      setIsLogin(true);
-    }
-  }, []);
-
-
-  const [isSidebarOpenMenu, setIsSidebarOpenMenu] = useState(true);
-  const [isOpenFullScreenPanel, setIsOpenFullScreenPanel] = useState({
-    open: false,
-    model: ''
-  })
-
-  const messageBox = ({ status, msg }) => {
-    if (status === 'success') {
-      toast.success(msg);
-    } else {
-      toast.error(msg);
-    }
-  }
-  const value = {
-    isSidebarOpenMenu,
-    setIsSidebarOpenMenu,
-    isOpenFullScreenPanel,
-    setIsOpenFullScreenPanel,
-    setIsLogin,
-    isLogin,
-    messageBox,
-    token
-  }
-  // const router = createBrowserRouter([
-  //   {
-  //     path: "/",
-  //     exact: true,
-  //     element:
-  //       <>
-  //         <section className='main'>
-  //           <Header />
-  //           <div className='contentMain flex'>
-  //             <div className={`sidebarWrapper  border  ${isSidebarOpenMenu === true ? 'w-[20%] z-50' : 'w-[0px] opacity-0 overflow-hidden '} transition-all duration-300`}>
-  //               <Sidebar />
-  //             </div>
-  //             <div className={`rightSidePanel px-6 py-3 ${isSidebarOpenMenu === true ? 'w-[80%]' : 'w-[100%]'} transition-all duration-300`}>
-  //               <Dashboard />
-  //             </div>
-  //           </div>
-  //         </section>
-  //       </>
-  //   },
-  //   {
-  //     path: "/products",
-  //     exact: true,
-  //     element:
-  //       <>
-  //         <section className="main">
-  //           <Header />
-  //           <div className="contentMain flex">
-  //             <div
-  //               className={`sidebarWrapper border ${isSidebarOpenMenu
-  //                 ? 'w-[20%] z-50'
-  //                 : 'w-[0px] opacity-0 overflow-hidden'
-  //                 } transition-all duration-300`}
-  //             >
-  //               <Sidebar />
-  //             </div>
-  //             <div
-  //               className={`rightSidePanel px-6 py-3 ${isSidebarOpenMenu ? 'w-[80%]' : 'w-[100%]'
-  //                 } transition-all duration-300`}
-  //             >
-  //               <Product />
-  //             </div>
-  //           </div>
-  //         </section>
-  //       </>
-  //   },
-  //   {
-  //     path: "/homeslider/list",
-  //     exact: true,
-  //     element:
-  //       <>
-  //         <section className="main">
-  //           <Header />
-  //           <div className="contentMain flex">
-  //             <div
-  //               className={`sidebarWrapper border ${isSidebarOpenMenu
-  //                 ? 'w-[20%] z-50'
-  //                 : 'w-[0px] opacity-0 overflow-hidden'
-  //                 } transition-all duration-300`}
-  //             >
-  //               <Sidebar />
-  //             </div>
-  //             <div
-  //               className={`rightSidePanel px-6 py-3 ${isSidebarOpenMenu ? 'w-[80%]' : 'w-[100%]'
-  //                 } transition-all duration-300`}
-  //             >
-  //               <HomeSliderBaners />
-  //             </div>
-  //           </div>
-  //         </section>
-  //       </>
-  //   },
-  //   {
-  //     path: "/category/list",
-  //     exact: true,
-  //     element:
-  //       <>
-  //         <section className="main">
-  //           <Header />
-  //           <div className="contentMain flex">
-  //             <div
-  //               className={`sidebarWrapper border ${isSidebarOpenMenu
-  //                 ? 'w-[20%] z-50'
-  //                 : 'w-[0px] opacity-0 overflow-hidden'
-  //                 } transition-all duration-300`}
-  //             >
-  //               <Sidebar />
-  //             </div>
-  //             <div
-  //               className={`rightSidePanel px-6 py-3 ${isSidebarOpenMenu ? 'w-[80%]' : 'w-[100%]'
-  //                 } transition-all duration-300`}
-  //             >
-  //               <Category />
-  //             </div>
-  //           </div>
-  //         </section>
-  //       </>
-  //   },
-  //   {
-  //     path: "/user/list",
-  //     exact: true,
-  //     element:
-  //       <>
-  //         <section className="main">
-  //           <Header />
-  //           <div className="contentMain flex">
-  //             <div
-  //               className={`sidebarWrapper border ${isSidebarOpenMenu
-  //                 ? 'w-[20%] z-50'
-  //                 : 'w-[0px] opacity-0 overflow-hidden'
-  //                 } transition-all duration-300`}
-  //             >
-  //               <Sidebar />
-  //             </div>
-  //             <div
-  //               className={`rightSidePanel px-6 py-3 ${isSidebarOpenMenu ? 'w-[80%]' : 'w-[100%]'
-  //                 } transition-all duration-300`}
-  //             >
-  //               <User />
-  //             </div>
-  //           </div>
-  //         </section>
-  //       </>
-  //   },
-  //   {
-  //     path: "/login",
-  //     exact: true,
-  //     element:
-  //       <>
-  //         <Login />
-  //       </>
-  //   },
-  //   {
-  //     path: "/signup",
-  //     exact: true,
-  //     element:
-  //       <>
-  //         <SignUp />
-  //       </>
-  //   }
-  // ])
-
-
+  const context = useMyContext();
   const router = createBrowserRouter([
     {
       path: "/",
-      element: (
-        <PrivateRoute>
-          <section className='main'>
-
-            <Header />
-            <div className='contentMain flex'>
-              <div className={`sidebarWrapper  border  ${isSidebarOpenMenu === true ? 'w-[20%] z-50' : 'w-[0px] opacity-0 overflow-hidden '} transition-all duration-300`}>
-                <Sidebar />
-              </div>
-              <div className={`rightSidePanel px-6 py-3 ${isSidebarOpenMenu === true ? 'w-[80%]' : 'w-[100%]'} transition-all duration-300`}>
-
-                <Dashboard />
-              </div>
-            </div>
-          </section>
-        </PrivateRoute>
-      )
+      element: <MainLayout />, // Parent route with layout
+      children: [
+        {
+          path: "/",
+          element: (
+            <PrivateRoute>
+              <Dashboard />
+            </PrivateRoute>
+          )
+        },
+        {
+          path: "/products",
+          element: (
+            <PrivateRoute>
+              <Product />
+            </PrivateRoute>
+          )
+        },
+        {
+          path: "/homeslider/list",
+          element: (
+            <PrivateRoute>
+              <HomeSliderBaners />
+            </PrivateRoute>)
+        },
+        // Add more nested routes here
+      ]
     },
-    {
-      path: "/products",
-      element: (
-        <PrivateRoute>
-          <section className="main">
-            <Header />
-            <div className="contentMain flex">
-              <div className={`sidebarWrapper border ${isSidebarOpenMenu ? 'w-[20%] z-50' : 'w-[0px] opacity-0 overflow-hidden'} transition-all duration-300`}>
-                <Sidebar />
-              </div>
-              <div className={`rightSidePanel px-6 py-3 ${isSidebarOpenMenu ? 'w-[80%]' : 'w-[100%]'} transition-all duration-300`}>
-                <Product />
-              </div>
-            </div>
-          </section>
-        </PrivateRoute>
-      )
-    },
-    {
-      path: "/homeslider/list",
-      element: (
-        <PrivateRoute>
-          <section className="main">
-            <Header />
-            <div className="contentMain flex">
-              <div className={`sidebarWrapper border ${isSidebarOpenMenu ? 'w-[20%] z-50' : 'w-[0px] opacity-0 overflow-hidden'} transition-all duration-300`}>
-                <Sidebar />
-              </div>
-              <div className={`rightSidePanel px-6 py-3 ${isSidebarOpenMenu ? 'w-[80%]' : 'w-[100%]'} transition-all duration-300`}>
-                <HomeSliderBaners />
-              </div>
-            </div>
-          </section>
-        </PrivateRoute>
-      )
-    },
-    // Other routes remain the same...
     {
       path: "/login",
-      element: (
-        <>
-          <Login />
-        </>
-      )
+      element: <Login />
     },
     {
       path: "/signup",
-      element: (
-        <>
-          <SignUp />
-        </>
-      )
+      element: <SignUp />
     }
   ]);
+
   return (
     <>
-      <Mycontext.Provider value={value}>
 
-        <RouterProvider router={router} />
+      <RouterProvider router={router} />
 
+      <Dialog
+        fullScreen
+        open={context.isOpenFullScreenPanel.open}
+        onClose={() => context.setIsOpenFullScreenPanel({ open: false })}
+        TransitionComponent={Transition}
+      >
+        <AppBar sx={{ position: 'relative' }}>
+          <Toolbar>
+            <IconButton
+              edge="start"
+              color="inherit"
+              onClick={() => context.setIsOpenFullScreenPanel({ open: false })}
+              aria-label="close"
+            >
+              <IoClose />
+            </IconButton>
+            <Typography sx={{ ml: 2, flex: 1 }} variant="h6" component="div">
+              {context.isOpenFullScreenPanel?.model}
+            </Typography>
 
-        <Dialog
-          fullScreen
-          open={isOpenFullScreenPanel.open}
-          onClose={() => setIsOpenFullScreenPanel({ open: false })}
-          TransitionComponent={Transition}
-        >
-          <AppBar sx={{ position: 'relative' }}>
-            <Toolbar>
-              <IconButton
-                edge="start"
-                color="inherit"
-                onClick={() => setIsOpenFullScreenPanel({ open: false })}
-                aria-label="close"
-              >
-                <IoClose />
-              </IconButton>
-              <Typography sx={{ ml: 2, flex: 1 }} variant="h6" component="div">
-                {isOpenFullScreenPanel?.model}
-              </Typography>
+          </Toolbar>
+        </AppBar>
+        {context.isOpenFullScreenPanel?.model === 'Add Product' && <AddProduct />}
+        {context.isOpenFullScreenPanel?.model === 'Add Slider' && <AddHomeSlide />}
+        {context.isOpenFullScreenPanel?.model === 'Add Category' && <AddCategory />}
+      </Dialog>
 
-            </Toolbar>
-          </AppBar>
-          {isOpenFullScreenPanel?.model === 'Add Product' && <AddProduct />}
-          {isOpenFullScreenPanel?.model === 'Add Slider' && <AddHomeSlide />}
-          {isOpenFullScreenPanel?.model === 'Add Category' && <AddCategory />}
-        </Dialog>
+      <Toaster />
 
-        <Toaster />
-      </Mycontext.Provider >
     </>
   )
 }
 
 export default App
-export { Mycontext };

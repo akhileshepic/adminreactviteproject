@@ -18,12 +18,12 @@ import {
     Paper,
 
 } from '@mui/material';
-import { Mycontext } from '../../App';
 import { getAll } from '../../utils/api';
 import { Navigate } from 'react-router-dom';
+import { Mycontext } from '../../context/Mycontext';
 const HomeSliderBaners = () => {
 
-
+    const context = useContext(Mycontext)
 
 
     // State management
@@ -38,6 +38,7 @@ const HomeSliderBaners = () => {
                     setHomeSlider(response.data);
 
                 } else {
+
                     context.messageBox({ status: 'error', msg: response.error });
                 }
             } catch (error) {
