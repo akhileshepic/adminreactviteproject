@@ -1,5 +1,5 @@
 import { Button } from '@mui/material'
-import React, { useContext, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { RiMenu2Fill } from "react-icons/ri";
 import IconButton from '@mui/material/IconButton';
 import { IoNotifications } from "react-icons/io5";
@@ -13,6 +13,7 @@ import { RiLogoutCircleRLine } from "react-icons/ri";
 
 import { Link } from 'react-router-dom';
 import { useMyContext } from '../context/Mycontext';
+import { getAll, PostALL } from '../utils/api';
 
 const StyledBadge = styled(Badge)(({ theme }) => ({
     '& .MuiBadge-badge': {
@@ -34,13 +35,26 @@ const Header = () => {
         setAnchorEl(null);
     };
 
-    const handlelogout = () => {
-        setAnchorEl(null);
-        context.setIsAuth({ accessToken: '', refreshToken: '' });
-        context.setLogin(false);
-        localStorage.removeItem("isAuth");
 
-        context.messageBox({ status: 'success', msg: 'Logged out successfully' })
+    const handlelogout = async () => {
+        setAnchorEl(null);
+        try {
+            const response = await getAll('user/logout'); // API call to logout
+            if (response.success) {
+                // Clear auth state and notify the user
+                context.setIsAuth({ accessToken: '', refreshToken: '' });
+                context.setLogin(false);
+                localStorage.removeItem("isAuth");
+
+                context.messageBox({ status: 'success', msg: 'Logged out successfully' });
+            } else {
+                context.messageBox({ status: 'error', msg: response.message || 'Logout failed.' });
+            }
+        } catch (error) {
+            // Handle any unexpected errors
+            context.messageBox({ status: 'error', msg: 'An error occurred during logout. Please try again.' });
+        }
+
     };
     return (
         <header className={`w-full h-auto pr-7 py-2 shadow-md flex items-center justify-between bg-white ${context.isSidebarOpenMenu === true ? 'pl-72 ' : 'pl-7'} transition-all`}>

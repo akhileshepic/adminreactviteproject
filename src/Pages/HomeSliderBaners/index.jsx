@@ -18,7 +18,7 @@ import {
     Paper,
 
 } from '@mui/material';
-import { getAll } from '../../utils/api';
+import { deleteApi, getAll } from '../../utils/api';
 import { useNavigate } from 'react-router-dom';
 import { useMyContext } from '../../context/Mycontext';
 const HomeSliderBaners = () => {
@@ -29,22 +29,23 @@ const HomeSliderBaners = () => {
     const [selected, setSelected] = useState([]);
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(5);
+    const fetchData = async () => {
+        try {
+            const response = await getAll('slider');
 
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const response = await getAll('slider');
-                console.log('slider', response.data.data)
-                if (response.success && Array.isArray(response.data.data)) {
+            if (response.success && Array.isArray(response.data.data)) {
 
-                    setHomeSlider(response.data.data);
-                } else {
-                    context.messageBox({ status: 'error', msg: response.message });
-                }
-            } catch (error) {
-                console.error('Error fetching sliders:', error);
+                setHomeSlider(response.data.data);
+            } else {
+                context.messageBox({ status: 'error', msg: response.message });
+
             }
-        };
+        } catch (error) {
+            console.error('Error fetching sliders:', error);
+        }
+    };
+    useEffect(() => {
+
         fetchData();
     }, [context, navigate]);
 
@@ -84,7 +85,21 @@ const HomeSliderBaners = () => {
             setHomeSlider(homeSlider.filter((product) => product.id !== id));
         }
     };
+    const deletslide = async (id) => {
+        try {
 
+            const response = await deleteApi(`slider/${id}`)
+            if (response.success) {
+                console.log(response)
+                context.messageBox({ status: 'success', msg: response.data.message });
+                fetchData();
+            } else {
+                context.messageBox({ status: 'error', msg: response.message });
+            }
+        } catch (error) {
+            console.error('Error fetching sliders:', error);
+        }
+    }
     return (
         <div className="TableItem w-full px-6 py-6 border rounded-md mt-6 bg-white">
             <h1 className="mb-3 font-bold text-[20px]">Home Slider Banner</h1>
@@ -123,7 +138,7 @@ const HomeSliderBaners = () => {
                                 homeSlider.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((product) => {
                                     const isItemSelected = isSelected(product.id);
                                     return (
-                                        <TableRow hover role="checkbox" tabIndex={-1} key={product.id} selected={isItemSelected}>
+                                        <TableRow hover role="checkbox" tabIndex={-1} key={product._id} selected={isItemSelected}>
                                             <TableCell padding="checkbox">
                                                 <Checkbox
                                                     color="primary"
@@ -135,17 +150,17 @@ const HomeSliderBaners = () => {
                                                 <img
                                                     src={`${baseUrl}${product.image}`}
                                                     alt={product.name}
-                                                    style={{ width: 300, height: 50, borderRadius: 5 }}
+                                                    style={{ width: 150, height: 50, borderRadius: 5 }}
                                                 />
                                             </TableCell>
                                             <TableCell align="center">
-                                                <Button onClick={() => handleEdit(product.id)}>
+                                                <Button onClick={() => handleEdit(product._id)}>
                                                     <CiEdit className="text-[20px]" />
                                                 </Button>
                                                 <Button>
                                                     <FaRegEye className="text-[20px]" />
                                                 </Button>
-                                                <Button onClick={() => handleDelete(product.id)}>
+                                                <Button onClick={() => deletslide(product._id)}>
                                                     <RiDeleteBin6Line className="text-[20px]" />
                                                 </Button>
                                             </TableCell>

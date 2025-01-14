@@ -7,6 +7,9 @@ import 'react-lazy-load-image-component/src/effects/blur.css';
 import { Button } from '@mui/material';
 import UploadBox from '../../../Components/UploadBox';
 const AddCategory = () => {
+
+
+
     return (
         <div className='p-5'>
             <form className='addProduct p-8 py-3 rounded-md shadow-md'>

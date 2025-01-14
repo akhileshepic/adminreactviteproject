@@ -78,7 +78,8 @@ const refreshAccessToken = async (refreshToken) => {
 // Generic POST Request
 export const PostALL = async (url, formData) => {
     try {
-        console.log(url, 'ur;')
+
+        console.log(formData, 'formData;')
         const response = await axiosInstance.post(url, formData);
         return {
             success: true,
@@ -102,6 +103,18 @@ export const getAll = async (url) => {
     }
 };
 
+
+export const deleteApi = async (url, data = null) => {
+    try {
+        const response = await axiosInstance.delete(url, data);
+        return {
+            success: true,
+            data: response.data
+        };
+    } catch (error) {
+        return handleError(error);
+    }
+}
 // Error Handling Function
 const handleError = (error) => {
     if (error.response) {
@@ -125,3 +138,6 @@ const handleError = (error) => {
         };
     }
 };
+
+
+
