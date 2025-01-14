@@ -15,15 +15,15 @@ const MyContextProvider = ({ children }) => {
                 return JSON.parse(storedAuth);
             } catch (error) {
                 console.error("Failed to parse isAuth from localStorage:", error);
-                return { user: null, token: '' }; // Default value
+                return { accessToken: '', refreshToken: '' }; // Default value
             }
         }
-        return { user: null, token: '' }; // Default value if nothing in localStorage
+        return { accessToken: null, refreshToken: '' }; // Default value if nothing in localStorage
     });
 
 
     useEffect(() => {
-        if (isAuth.token) {
+        if (isAuth.accessToken) {
             setLogin(true); // User is logged in if token exists
         } else {
             setLogin(false); // User is logged out if token doesn't exist
@@ -35,7 +35,8 @@ const MyContextProvider = ({ children }) => {
     })
 
     useEffect(() => {
-        if (isAuth && isAuth.token) {
+        console.log('isAuth context', isAuth)
+        if (isAuth && isAuth.accessToken && isAuth.refreshToken) {
             // Save to localStorage
             localStorage.setItem("isAuth", JSON.stringify(isAuth));
         } else {
@@ -44,46 +45,47 @@ const MyContextProvider = ({ children }) => {
         }
     }, [isAuth]);
 
-    const getAll = async (url) => {
+    // const getAll = async (url) => {
 
-        const token = isAuth?.token; // Access token
-        const headers = {
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${token}` // Bearer token format
-        };
-        try {
-            const response = await axios.get(`${baseUrl}${url}`, { headers });
-            return response.data;
-        } catch (error) {
+    //     const token = isAuth?.token; // Access token
+    //     const headers = {
+    //         "Content-Type": "application/json",
+    //         "Authorization": `Bearer ${token}` // Bearer token format
+    //     };
 
-            if (error.response) {
-                // Server responded with a status other than 2xx
+    //     try {
+    //         const response = await axios.get(`${baseUrl}${url}`, { headers });
+    //         return response.data;
+    //     } catch (error) {
 
-                return {
-                    success: false,
-                    status: error.response.status,
-                    message: error.response.data.message || "Error occurred",
-                    error: error.response.data.error || error.response.statusText,
-                };
-            } else if (error.request) {
-                // Request was made but no response was received
-                return {
-                    success: false,
-                    message: "No response from server",
-                    error: "Network error or server not reachable",
-                    status: error.response.status
-                };
-            } else {
-                // Something else caused the error
-                return {
-                    success: false,
-                    message: "Unexpected error occurred",
-                    error: error.message,
-                    status: error.response.status
-                };
-            }
-        }
-    }
+    //         if (error.response) {
+    //             // Server responded with a status other than 2xx
+
+    //             return {
+    //                 success: false,
+    //                 status: error.response.status,
+    //                 message: error.response.data.message || "Error occurred",
+    //                 error: error.response.data.error || error.response.statusText,
+    //             };
+    //         } else if (error.request) {
+    //             // Request was made but no response was received
+    //             return {
+    //                 success: false,
+    //                 message: "No response from server",
+    //                 error: "Network error or server not reachable",
+    //                 status: error.response.status
+    //             };
+    //         } else {
+    //             // Something else caused the error
+    //             return {
+    //                 success: false,
+    //                 message: "Unexpected error occurred",
+    //                 error: error.message,
+    //                 status: error.response.status
+    //             };
+    //         }
+    //     }
+    // }
 
     const messageBox = ({ status, msg }) => {
         if (status === 'success') {
@@ -103,7 +105,7 @@ const MyContextProvider = ({ children }) => {
         setIsAuth,
         isLogin,
         setLogin,
-        getAll
+
     }
     return <Mycontext.Provider value={value}>{children}</Mycontext.Provider>;
 }

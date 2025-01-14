@@ -36,9 +36,9 @@ const Header = () => {
 
     const handlelogout = () => {
         setAnchorEl(null);
-        context.setIsAuth({ user: null, token: '' }); // Reset the isAuth state
-        context.setLogin(false); // Set isLogin to false
-        localStorage.removeItem("isAuth"); // Remove isAuth from localStorage
+        context.setIsAuth({ accessToken: '', refreshToken: '' });
+        context.setLogin(false);
+        localStorage.removeItem("isAuth");
 
         context.messageBox({ status: 'success', msg: 'Logged out successfully' })
     };

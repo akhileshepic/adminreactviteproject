@@ -17,10 +17,9 @@ import { useMyContext } from '../../context/Mycontext';
 const Login = () => {
     const navigation = useNavigate();
     const context = useMyContext();
-    if (context.isAuth.token) {
+    if (context.isAuth.refreshToken) {
         return <Navigate to="/" replace />;
     }
-
     const [loadingGoogle, setLoadingGoogle] = useState(false);
     const [loadingFacebook, setLoadingFacebook] = useState(false);
     const [isPassword, setIsPassword] = useState(false)
@@ -30,32 +29,28 @@ const Login = () => {
     function handleClickFacebook() {
         setLoadingFacebook(true);
     }
-
     const handleClickForm = async (e) => {
         e.preventDefault();
         const formData = new FormData(e.target);
         const email = formData.get('email');
         const password = formData.get('password');
-
         if (!email || !password) {
             alert('Both email and password are required');
             return; // Early return in case of invalid form data
         }
         try {
             const data = { email, password };
-            const response = await PostALL(data, 'user/login');
-
+            const response = await PostALL('user/login', data);
             if (response.success) {
                 const userData = {
-                    user: response?.data,
-                    token: response.token
+                    accessToken: response.data.data.accessToken,
+                    refreshToken: response.data.data.refreshToken
                 }
                 context.setIsAuth(userData)
-
+                console.log(response)
                 context.setLogin(true)
-                context.messageBox({ status: 'success', msg: response.message })
+                context.messageBox({ status: 'success', msg: response.data.message })
                 navigation('/')
-
             } else {
                 console.log(response)
                 context.messageBox({ status: 'error', msg: response.error })
@@ -65,7 +60,6 @@ const Login = () => {
             alert('Login Error:', error)
         }
     }
-
     return (
         <section className='bg-white w-full h-full '>
             <header className='w-full fixed top-0 left-0 px-2 py-3 flex items-center justify-between z-50'>
