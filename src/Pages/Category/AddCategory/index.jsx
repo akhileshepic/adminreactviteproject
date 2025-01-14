@@ -6,8 +6,8 @@ import { IoCloudUploadOutline } from "react-icons/io5";
 import 'react-lazy-load-image-component/src/effects/blur.css';
 import { Button } from '@mui/material';
 import UploadBox from '../../../Components/UploadBox';
-const AddCategory = () => {
 
+const AddCategory = () => {
 
 
 

@@ -1,5 +1,5 @@
 import { Button } from '@mui/material'
-import React, { useContext, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 
 import { CiFilter } from "react-icons/ci";
 import { CiEdit } from "react-icons/ci";
@@ -18,21 +18,38 @@ import {
     Paper,
 
 } from '@mui/material';
-import Mycontext from '../../App';
+import { useMyContext } from '../../context/Mycontext';
+import { getAll } from '../../utils/api';
+const baseUrl = import.meta.env.VITE_BASE_FILE_URL;
 const Category = () => {
-    const context = useContext(Mycontext)
-    const initialProducts = [
-        { id: 1, name: 'test', image: 'https://isomorphic-furyroad.s3.amazonaws.com/public/products/modern/7.webp' },
-        { id: 2, name: 'test', image: 'https://isomorphic-furyroad.s3.amazonaws.com/public/products/modern/7.webp' },
-        { id: 3, name: 'test', image: 'https://isomorphic-furyroad.s3.amazonaws.com/public/products/modern/7.webp' },
-    ];
+    const context = useMyContext()
+
 
     // State management
-    const [category, setcategory] = useState(initialProducts);
+    const [category, setcategory] = useState([]);
     const [selected, setSelected] = useState([]);
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(5);
 
+    const fetchall = async () => {
+        try {
+            const response = await getAll('category');
+
+            if (response.success && Array.isArray(response.data.data)) {
+
+                setcategory(response.data.data);
+            } else {
+                context.messageBox({ status: 'error', msg: response.message });
+
+            }
+        } catch (error) {
+            console.error('Error fetching sliders:', error);
+        }
+    }
+
+    useEffect(() => {
+        fetchall();
+    }, [])
 
     // Selection handlers
     const handleSelectAllClick = (event) => {
@@ -132,7 +149,7 @@ const Category = () => {
                                                 hover
                                                 role="checkbox"
                                                 tabIndex={-1}
-                                                key={product.id}
+                                                key={product._id}
                                                 selected={isItemSelected}
                                             >
                                                 <TableCell padding="checkbox">
@@ -146,7 +163,7 @@ const Category = () => {
                                                 <TableCell>
                                                     <div className='flex items-center gap-4 '>
                                                         <img
-                                                            src={product.image}
+                                                            src={`${baseUrl}${product.image}`}
                                                             alt={product.name}
                                                             style={{ width: 100, height: 50, borderRadius: 5 }}
                                                         />
