@@ -31,7 +31,8 @@ const MyContextProvider = ({ children }) => {
     }, [isAuth]);
     const [isOpenFullScreenPanel, setIsOpenFullScreenPanel] = useState({
         open: false,
-        model: ''
+        model: '',
+        id: ''
     })
 
     useEffect(() => {

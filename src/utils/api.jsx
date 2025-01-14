@@ -140,4 +140,17 @@ const handleError = (error) => {
 };
 
 
+export const getSingle = async (url, id) => {
+    try {
+        // Append the id to the URL to fetch a specific resource
+        const response = await axiosInstance.get(`${url}/${id}`);
+        return {
+            success: true,
+            data: response.data
+        };
+    } catch (error) {
+        return handleError(error);
+    }
+};
+
 

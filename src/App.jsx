@@ -34,6 +34,7 @@ import toast, { Toaster } from 'react-hot-toast';
 import MainLayout from './Pages/MainLayout'
 import { useMyContext } from './context/Mycontext'
 import PrivateRoute from './PrivateRoute'
+import ViewSlider from './Pages/HomeSliderBaners/ViewSlider'
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -67,6 +68,13 @@ function App() {
           element: (
             <PrivateRoute>
               <HomeSliderBaners />
+            </PrivateRoute>)
+        },
+        {
+          path: "/category/list",
+          element: (
+            <PrivateRoute>
+              <Category />
             </PrivateRoute>)
         },
         // Add more nested routes here
@@ -112,6 +120,7 @@ function App() {
         {context.isOpenFullScreenPanel?.model === 'Add Product' && <AddProduct />}
         {context.isOpenFullScreenPanel?.model === 'Add Slider' && <AddHomeSlide />}
         {context.isOpenFullScreenPanel?.model === 'Add Category' && <AddCategory />}
+        {context.isOpenFullScreenPanel?.model === 'View Slider' && <ViewSlider />}
       </Dialog>
 
       <Toaster />

@@ -10,6 +10,7 @@ const AddCategory = () => {
 
 
 
+
     return (
         <div className='p-5'>
             <form className='addProduct p-8 py-3 rounded-md shadow-md'>

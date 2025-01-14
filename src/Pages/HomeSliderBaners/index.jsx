@@ -51,12 +51,18 @@ const HomeSliderBaners = () => {
 
     const handleSelectAllClick = (event) => {
         if (event.target.checked) {
+            // First, select all items
             const newSelected = homeSlider.map((product) => product.id);
             setSelected(newSelected);
-            return;
+
+
+        } else {
+            // If the checkbox is unchecked, clear the selected items
+            setSelected([]);
         }
-        setSelected([]);
     };
+
+
 
     const handleClick = (id) => {
         const selectedIndex = selected.indexOf(id);
@@ -87,7 +93,6 @@ const HomeSliderBaners = () => {
     };
     const deletslide = async (id) => {
         try {
-
             const response = await deleteApi(`slider/${id}`)
             if (response.success) {
                 console.log(response)
@@ -143,7 +148,7 @@ const HomeSliderBaners = () => {
                                                 <Checkbox
                                                     color="primary"
                                                     checked={isItemSelected}
-                                                    onChange={() => handleClick(product.id)}
+                                                    onChange={() => handleClick(product._id)}
                                                 />
                                             </TableCell>
                                             <TableCell>
@@ -154,10 +159,12 @@ const HomeSliderBaners = () => {
                                                 />
                                             </TableCell>
                                             <TableCell align="center">
-                                                <Button onClick={() => handleEdit(product._id)}>
+                                                <Button >
                                                     <CiEdit className="text-[20px]" />
                                                 </Button>
-                                                <Button>
+                                                <Button onClick={() =>
+                                                    context.setIsOpenFullScreenPanel({ open: true, model: 'View Slider', id: product._id })
+                                                }>
                                                     <FaRegEye className="text-[20px]" />
                                                 </Button>
                                                 <Button onClick={() => deletslide(product._id)}>
