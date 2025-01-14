@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { LazyLoadImage } from 'react-lazy-load-image-component'
 
 import { IoMdClose } from "react-icons/io";
@@ -7,19 +7,62 @@ import 'react-lazy-load-image-component/src/effects/blur.css';
 import { Button } from '@mui/material';
 import UploadBox from '../../../Components/UploadBox';
 
+import { getAll, getSingle } from '../../../utils/api';
+import { useMyContext } from '../../../context/Mycontext';
+import axios from 'axios';
+const baseUrl = import.meta.env.VITE_BASE_FILE_URL;
 const AddCategory = () => {
+    const context = useMyContext()
+    const [data, setData] = useState(null);
+    const [category, setCategory] = useState(null);
+    const [files, setFiles] = useState([]);
 
 
+    const handleFilesChange = (uploadedFiles) => {
+        setFiles(uploadedFiles);
+        console.log("Files received in parent:", uploadedFiles); // Debugging
+    };
 
+
+    const handleformSubmit = async (e) => {
+        e.preventDefault();
+
+        const formData = new FormData();
+
+        files.forEach((file, index) => {
+            formData.append(`image`, file);  // Append each file with a unique key
+        });
+
+        formData.append('name', category);
+
+        try {
+            const response = await axios.post(`${baseUrl}api/category`, formData, {
+                headers: {
+                    'Accept': 'multipart/form-data',
+                    'Authorization': `Bearer ${context.isAuth.accessToken}`, // Replace with your actual token
+                }
+            });
+            if (response.status === 200) {
+                context.messageBox({ status: 'success', msg: response.data.message });
+                setFiles('');
+                setCategory('')
+                context.setIsOpenFullScreenPanel({ open: false })
+            }
+            console.log('Response:', response);
+        } catch (error) {
+            console.log('Response error:', error);
+            context.messageBox({ status: 'error', msg: error.response.data.message });
+        }
+    }
     return (
         <div className='p-5'>
-            <form className='addProduct p-8 py-3 rounded-md shadow-md'>
+            <form className='addProduct p-8 py-3 rounded-md shadow-md' onSubmit={handleformSubmit} encType='multiple-part'>
                 <div className='scroll max-h-[70vh]  pr-4'>
                     <div className='col w-[full] mt-5  p-4 '>
                         <div className='grid grid-cols-1 mb-3'>
                             <div className='col w-[25%]'>
                                 <h3 className='text-[14px] font-[500] mb-1'>Category Name</h3>
-                                <input type='text' className='w-[full] h-[40px] border border-[rgba(0,0,0,0.3)] focus:outline-none focus:border-[rgba(0,0,0,0.5)] rounded-sm p-3 text-sm' />
+                                <input type='text' className='w-[full] h-[40px] border border-[rgba(0,0,0,0.3)] focus:outline-none focus:border-[rgba(0,0,0,0.5)] rounded-sm p-3 text-sm' value={category} onChange={(e) => setCategory(e.target.value)} />
                             </div>
                         </div>
                         <h3 className='text-[14px] font-[500] mb-1'>Image</h3>
@@ -44,14 +87,16 @@ const AddCategory = () => {
                                 </div>
                             </div>
 
-                            <UploadBox muliple={true} />
+
+
+                            <UploadBox multiple={false} onFilesChange={handleFilesChange} />
                         </div>
                     </div>
                 </div>
                 <br />
                 <div className='w-[200px]'>
 
-                    <Button type="button" className="!bg-blue-700 !text-white !w-full flex gap-4"><IoCloudUploadOutline className='text-[25px]' />Publish and View</Button>
+                    <Button type="submit" className="!bg-blue-700 !text-white !w-full flex gap-4"><IoCloudUploadOutline className='text-[25px]' />Publish and View</Button>
                 </div>
 
             </form>

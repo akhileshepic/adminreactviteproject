@@ -49,7 +49,7 @@ const Category = () => {
 
     useEffect(() => {
         fetchall();
-    }, [])
+    }, [context])
 
     // Selection handlers
     const handleSelectAllClick = (event) => {
