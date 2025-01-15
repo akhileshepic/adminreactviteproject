@@ -50,9 +50,31 @@ const EditHomeSlide = () => {
     useEffect(() => {
         fetchdata()
     }, [context?.isOpenFullScreenPanel?.id])
-    const removeHandleClick = (id) => {
-        deletslide(id)
+    const deletslide = async (id) => {
+        try {
+            const response = await deleteApi(`slider/${id}`)
+            if (response.success) {
+                console.log(response)
+                context.messageBox({ status: 'success', msg: response.data.message });
+                fetchdata();
+            } else {
+                context.messageBox({ status: 'error', msg: response.message });
+            }
+        } catch (error) {
+            console.error('Error fetching sliders:', error);
+        }
     }
+    const removeHandleClick = () => {
+        setHomeSlider((prev) => ({
+            ...prev,
+            image: ''
+        }));
+        // deletslide(context?.isOpenFullScreenPanel?.id)
+    }
+    const handleRemoveImage = () => {
+
+        setImage('');
+    };
     const handleformSubmit = async (e) => {
         e.preventDefault();
 
@@ -95,7 +117,7 @@ const EditHomeSlide = () => {
 
                             {image ? (
                                 <div className='uploadWrapper relative'>
-                                    <span className='absolute w-[20px] h-[20px] rounded-full overflow-hidden bg-red-700 -top-[5px] -right-[5px] z-50 flex items-center justify-center cursor-pointer'><IoMdClose className='text-white text-[17px]' /></span>
+                                    <span className='absolute w-[20px] h-[20px] rounded-full overflow-hidden bg-red-700 -top-[5px] -right-[5px] z-50 flex items-center justify-center cursor-pointer'><IoMdClose className='text-white text-[17px]' onClick={handleRemoveImage} /></span>
                                     <div className='uploadBox p-3 mb-2 rounded-md overflow-hidden border  border-dashed border-[rgba(0,0,0,0.3)]
                                  h-[150px] w-[100%] bg-gray-100 cursor-pointer hover:bg-gray-50 flex items-center justify-center flex-col relative'>
                                         <span ></span>
@@ -113,9 +135,9 @@ const EditHomeSlide = () => {
                                     </div>
                                 </div>
                             )
-                                : (
+                                : homeSlider.image ? (
                                     <div className='uploadWrapper relative'>
-                                        <span className='absolute w-[20px] h-[20px] rounded-full overflow-hidden bg-red-700 -top-[5px] -right-[5px] z-50 flex items-center justify-center cursor-pointer'><IoMdClose className='text-white text-[17px]' /></span>
+                                        <span className='absolute w-[20px] h-[20px] rounded-full overflow-hidden bg-red-700 -top-[5px] -right-[5px] z-50 flex items-center justify-center cursor-pointer'><IoMdClose className='text-white text-[17px]' onClick={removeHandleClick} /></span>
                                         <div className='uploadBox p-3 mb-2 rounded-md overflow-hidden border  border-dashed border-[rgba(0,0,0,0.3)]
                                  h-[150px] w-[100%] bg-gray-100 cursor-pointer hover:bg-gray-50 flex items-center justify-center flex-col relative'>
                                             <span ></span>
@@ -132,7 +154,8 @@ const EditHomeSlide = () => {
                                             />
                                         </div>
                                     </div>
-                                )}
+                                ) : ("")
+                            }
 
                             < UploadBox multiple={false} onFilesChange={handleFilesChange} />
                         </div>

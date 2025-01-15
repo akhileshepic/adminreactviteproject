@@ -13,8 +13,8 @@ import axios from 'axios';
 const baseUrl = import.meta.env.VITE_BASE_FILE_URL;
 const AddCategory = () => {
     const context = useMyContext()
-    const [data, setData] = useState(null);
-    const [category, setCategory] = useState(null);
+    const [data, setData] = useState('');
+    const [category, setCategory] = useState('');
     const [files, setFiles] = useState([]);
     const [image, setImage] = useState(null);
     const handleFilesChange = (uploadedFiles) => {
@@ -31,7 +31,8 @@ const AddCategory = () => {
     };
 
     const handleRemoveImage = () => {
-        setImage(null);
+
+        setImage('');
     };
     const handleformSubmit = async (e) => {
         e.preventDefault();
@@ -79,7 +80,7 @@ const AddCategory = () => {
 
                             {image ? (
                                 <div className='uploadWrapper relative'>
-                                    <span className='absolute w-[20px] h-[20px] rounded-full overflow-hidden bg-red-700 -top-[5px] -right-[5px] z-50 flex items-center justify-center cursor-pointer'><IoMdClose className='text-white text-[17px]' /></span>
+                                    <span className='absolute w-[20px] h-[20px] rounded-full overflow-hidden bg-red-700 -top-[5px] -right-[5px] z-50 flex items-center justify-center cursor-pointer'><IoMdClose className='text-white text-[17px]' onClick={handleRemoveImage} /></span>
                                     <div className='uploadBox p-3 mb-2 rounded-md overflow-hidden border  border-dashed border-[rgba(0,0,0,0.3)]
                                  h-[150px] w-[100%] bg-gray-100 cursor-pointer hover:bg-gray-50 flex items-center justify-center flex-col relative'>
                                         <span ></span>

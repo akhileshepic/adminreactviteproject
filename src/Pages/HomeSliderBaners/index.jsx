@@ -164,11 +164,7 @@ const HomeSliderBaners = () => {
                                                 }>
                                                     <CiEdit className="text-[20px]" />
                                                 </Button>
-                                                <Button onClick={() =>
-                                                    console.log(product._id)
-                                                }>
-                                                    <FaRegEye className="text-[20px]" />
-                                                </Button>
+
                                                 <Button onClick={() => deletslide(product._id)}>
                                                     <RiDeleteBin6Line className="text-[20px]" />
                                                 </Button>
