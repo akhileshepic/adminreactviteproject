@@ -14,11 +14,28 @@ const AddHomeSlide = () => {
     const context = useMyContext();
     const [homeSlider, setHomeSlider] = useState([]);
     const [files, setFiles] = useState([]);
-
+    const [images, setImages] = useState([]);
     // Handle file data from UploadBox
     const handleFilesChange = (uploadedFiles) => {
         setFiles(uploadedFiles);
-        console.log("Files received in parent:", uploadedFiles); // Debugging
+        const files = uploadedFiles;
+        const newImages = [];
+
+        for (let i = 0; i < files.length; i++) {
+            const file = files[i];
+            const reader = new FileReader();
+
+            reader.onloadend = () => {
+                newImages.push(reader.result);
+
+                if (newImages.length === files.length) {
+                    setImages((prevImages) => [...prevImages, ...newImages]);
+                }
+            };
+
+            reader.readAsDataURL(file);
+        }
+
     };
     const fetchdata = async () => {
         try {
@@ -94,7 +111,7 @@ const AddHomeSlide = () => {
                 <div className='scroll max-h-[70vh]  pr-4'>
                     <div className='col w-full mt-5  p-4 '>
                         <div className="grid grid-cols-2 lg:grid-cols-6 md:grid-cols-6 gap-4">
-                            {homeSlider.map((data) => (
+                            {images.map((data) => (
                                 <div className='uploadWrapper relative' key={data._id}>
                                     <span className='absolute w-[20px] h-[20px] rounded-full overflow-hidden bg-red-700 -top-[5px] -right-[5px] z-50 flex items-center justify-center cursor-pointer'><IoMdClose className='text-white text-[17px]' onClick={() => removeHandleClick(data._id)} /></span>
                                     <div className='uploadBox p-3 mb-2 rounded-md overflow-hidden border  border-dashed border-[rgba(0,0,0,0.3)]
@@ -109,7 +126,7 @@ const AddHomeSlide = () => {
                                             }}
                                             className='w-full h-full object-cover'
 
-                                            src={`${baseUrl}${data.image}`} // use normal <img> attributes as props
+                                            src={data} // use normal <img> attributes as props
                                         />
                                     </div>
                                 </div>

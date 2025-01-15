@@ -121,6 +121,7 @@ function App() {
         {context.isOpenFullScreenPanel?.model === 'Add Slider' && <AddHomeSlide />}
         {context.isOpenFullScreenPanel?.model === 'Add Category' && <AddCategory />}
         {context.isOpenFullScreenPanel?.model === 'View Slider' && <ViewSlider />}
+
       </Dialog>
 
       <Toaster />

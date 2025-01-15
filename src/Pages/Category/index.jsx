@@ -90,7 +90,7 @@ const Category = () => {
 
     // Action handlers
     const handleEdit = (id) => {
-        alert(`Edit product with ID: ${id}`);
+
         // Add your edit logic here
     };
 
@@ -143,7 +143,7 @@ const Category = () => {
                                 {category
                                     .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                                     .map((product) => {
-                                        const isItemSelected = isSelected(product.id);
+                                        const isItemSelected = isSelected(product._id);
                                         return (
                                             <TableRow
                                                 hover
@@ -156,7 +156,7 @@ const Category = () => {
                                                     <Checkbox
                                                         color="primary"
                                                         checked={isItemSelected}
-                                                        onChange={() => handleClick(product.id)}
+                                                        onChange={() => handleClick(product._id)}
                                                     />
                                                 </TableCell>
                                                 <TableCell>{product.name}</TableCell>
@@ -171,7 +171,7 @@ const Category = () => {
                                                     </div>
                                                 </TableCell>
                                                 <TableCell align="center">
-                                                    <Button className='!min-w-[20px] !w-[35px] !text-black' onClick={() => handleEdit(product.id)} >
+                                                    <Button className='!min-w-[20px] !w-[35px] !text-black' onClick={() => handleEdit(product._id)} >
                                                         <CiEdit className='text-[20px]' />
                                                     </Button>
                                                     <Button className='!min-w-[20px] !w-[35px] !text-black'>
