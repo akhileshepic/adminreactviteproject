@@ -6,42 +6,50 @@ import { IoCloudUploadOutline } from "react-icons/io5";
 import 'react-lazy-load-image-component/src/effects/blur.css';
 import { Button } from '@mui/material';
 import UploadBox from '../../../Components/UploadBox';
-import { deleteApi, getAll } from '../../../utils/api';
+import { deleteApi, getAll, getSingle } from '../../../utils/api';
 import { useMyContext } from '../../../context/Mycontext';
 import axios from 'axios';
 const baseUrl = import.meta.env.VITE_BASE_FILE_URL;
-const AddHomeSlide = () => {
+const EditHomeSlide = () => {
     const context = useMyContext();
+    console.log(context.isOpenFullScreenPanel?.id)
+
     const [homeSlider, setHomeSlider] = useState([]);
     const [files, setFiles] = useState([]);
-    const [images, setImages] = useState([]);
+    const [image, setImage] = useState(null);
     // Handle file data from UploadBox
     const handleFilesChange = (uploadedFiles) => {
         setFiles(uploadedFiles);
-        const files = uploadedFiles;
-        const newImages = [];
-
-        for (let i = 0; i < files.length; i++) {
-            const file = files[i];
+        const file = uploadedFiles[0];
+        if (file) {
             const reader = new FileReader();
-
             reader.onloadend = () => {
-                newImages.push(reader.result);
-
-                if (newImages.length === files.length) {
-                    setImages((prevImages) => [...prevImages, ...newImages]);
-                }
+                setImage(reader.result);
             };
-
             reader.readAsDataURL(file);
         }
 
     };
+    const fetchdata = async () => {
+        try {
+            const response = await getSingle('slider', context?.isOpenFullScreenPanel?.id);
+
+            if (response.success) {
+
+                setHomeSlider(response.data.data);
+            } else {
+                context.messageBox({ status: 'error', msg: response.message });
+            }
+            console.log(homeSlider)
+        } catch (error) {
+            console.error('Error fetching sliders:', error);
+        }
+    }
 
 
     useEffect(() => {
-
-    }, [])
+        fetchdata()
+    }, [context?.isOpenFullScreenPanel?.id])
     const removeHandleClick = (id) => {
         deletslide(id)
     }
@@ -62,7 +70,7 @@ const AddHomeSlide = () => {
         });
 
         try {
-            const response = await axios.post(`${baseUrl}api/slider`, formData, {
+            const response = await axios.put(`${baseUrl}api/slider/${context?.isOpenFullScreenPanel?.id}`, formData, {
                 headers: {
                     'Accept': 'multipart/form-data',
                     'Authorization': `Bearer ${context.isAuth.accessToken}`, // Replace with your actual token
@@ -70,7 +78,7 @@ const AddHomeSlide = () => {
             });
             if (response.status === 200) {
                 context.messageBox({ status: 'success', msg: response.data.message });
-
+                fetchdata();
                 context.setIsOpenFullScreenPanel({ open: false })
             }
             console.log('Response:', response);
@@ -84,9 +92,10 @@ const AddHomeSlide = () => {
                 <div className='scroll max-h-[70vh]  pr-4'>
                     <div className='col w-full mt-5  p-4 '>
                         <div className="grid grid-cols-2 lg:grid-cols-6 md:grid-cols-6 gap-4">
-                            {images.map((data) => (
-                                <div className='uploadWrapper relative' key={data._id}>
-                                    <span className='absolute w-[20px] h-[20px] rounded-full overflow-hidden bg-red-700 -top-[5px] -right-[5px] z-50 flex items-center justify-center cursor-pointer'><IoMdClose className='text-white text-[17px]' onClick={() => removeHandleClick(data._id)} /></span>
+
+                            {image ? (
+                                <div className='uploadWrapper relative'>
+                                    <span className='absolute w-[20px] h-[20px] rounded-full overflow-hidden bg-red-700 -top-[5px] -right-[5px] z-50 flex items-center justify-center cursor-pointer'><IoMdClose className='text-white text-[17px]' /></span>
                                     <div className='uploadBox p-3 mb-2 rounded-md overflow-hidden border  border-dashed border-[rgba(0,0,0,0.3)]
                                  h-[150px] w-[100%] bg-gray-100 cursor-pointer hover:bg-gray-50 flex items-center justify-center flex-col relative'>
                                         <span ></span>
@@ -99,13 +108,33 @@ const AddHomeSlide = () => {
                                             }}
                                             className='w-full h-full object-cover'
 
-                                            src={data} // use normal <img> attributes as props
+                                            src={image} // use normal <img> attributes as props
                                         />
                                     </div>
                                 </div>
-                            ))}
+                            )
+                                : (
+                                    <div className='uploadWrapper relative'>
+                                        <span className='absolute w-[20px] h-[20px] rounded-full overflow-hidden bg-red-700 -top-[5px] -right-[5px] z-50 flex items-center justify-center cursor-pointer'><IoMdClose className='text-white text-[17px]' /></span>
+                                        <div className='uploadBox p-3 mb-2 rounded-md overflow-hidden border  border-dashed border-[rgba(0,0,0,0.3)]
+                                 h-[150px] w-[100%] bg-gray-100 cursor-pointer hover:bg-gray-50 flex items-center justify-center flex-col relative'>
+                                            <span ></span>
+                                            <LazyLoadImage
+                                                alt={'image'}
+                                                effect="blur"
+                                                wrapperProps={{
+                                                    // If you need to, you can tweak the effect transition using the wrapper style.
+                                                    style: { transitionDelay: "1s" },
+                                                }}
+                                                className='w-full h-full object-cover'
 
-                            <UploadBox multiple={true} onFilesChange={handleFilesChange} />
+                                                src={`${baseUrl}${homeSlider.image}`} // use normal <img> attributes as props
+                                            />
+                                        </div>
+                                    </div>
+                                )}
+
+                            < UploadBox multiple={false} onFilesChange={handleFilesChange} />
                         </div>
                     </div>
                 </div>
@@ -120,4 +149,4 @@ const AddHomeSlide = () => {
     )
 }
 
-export default AddHomeSlide
+export default EditHomeSlide

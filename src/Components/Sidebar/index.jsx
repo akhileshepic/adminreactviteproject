@@ -53,11 +53,11 @@ const Sidebar = () => {
                                 </Link>
                             </li>
                             <li className='w-full'>
-                                <Link to="/">
-                                    <Button className='!text-[rgba(0,0,0,0.7)] !capitalize !justify-start !w-full !pl-9 flex gap-2'>
-                                        <span className='block w-[5px] h-[5px] rounded-full bg-[rgba(0,0,0,0.3)]'></span>
-                                        Add Home Banner Slide</Button>
-                                </Link>
+
+                                <Button className='!text-[rgba(0,0,0,0.7)] !capitalize !justify-start !w-full !pl-9 flex gap-2' onClick={() => context.setIsOpenFullScreenPanel({ open: true, model: 'Add Slider' })}>
+                                    <span className='block w-[5px] h-[5px] rounded-full bg-[rgba(0,0,0,0.3)]'></span>
+                                    Add Home Banner Slide</Button>
+
                             </li>
 
                         </ul>

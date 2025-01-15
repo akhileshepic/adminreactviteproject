@@ -35,6 +35,7 @@ import MainLayout from './Pages/MainLayout'
 import { useMyContext } from './context/Mycontext'
 import PrivateRoute from './PrivateRoute'
 import ViewSlider from './Pages/HomeSliderBaners/ViewSlider'
+import EditHomeSlide from './Pages/HomeSliderBaners/EditHomeSlide'
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -121,6 +122,7 @@ function App() {
         {context.isOpenFullScreenPanel?.model === 'Add Slider' && <AddHomeSlide />}
         {context.isOpenFullScreenPanel?.model === 'Add Category' && <AddCategory />}
         {context.isOpenFullScreenPanel?.model === 'View Slider' && <ViewSlider />}
+        {context.isOpenFullScreenPanel?.model === 'Edit Slider' && <EditHomeSlide />}
 
       </Dialog>
 

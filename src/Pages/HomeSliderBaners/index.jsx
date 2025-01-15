@@ -159,11 +159,13 @@ const HomeSliderBaners = () => {
                                                 />
                                             </TableCell>
                                             <TableCell align="center">
-                                                <Button >
+                                                <Button onClick={() =>
+                                                    context.setIsOpenFullScreenPanel({ open: true, model: 'Edit Slider', id: product._id })
+                                                }>
                                                     <CiEdit className="text-[20px]" />
                                                 </Button>
                                                 <Button onClick={() =>
-                                                    context.setIsOpenFullScreenPanel({ open: true, model: 'View Slider', id: product._id })
+                                                    console.log(product._id)
                                                 }>
                                                     <FaRegEye className="text-[20px]" />
                                                 </Button>
@@ -194,7 +196,7 @@ const HomeSliderBaners = () => {
                     onRowsPerPageChange={handleChangeRowsPerPage}
                 />
             </div>
-        </div>
+        </div >
     )
 }
 
