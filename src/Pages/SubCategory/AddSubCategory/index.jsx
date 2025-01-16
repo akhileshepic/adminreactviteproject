@@ -4,19 +4,25 @@ import { LazyLoadImage } from 'react-lazy-load-image-component'
 import { IoMdClose } from "react-icons/io";
 import { IoCloudUploadOutline } from "react-icons/io5";
 import 'react-lazy-load-image-component/src/effects/blur.css';
-import { Button } from '@mui/material';
+import { Button, MenuItem, Select } from '@mui/material';
 import UploadBox from '../../../Components/UploadBox';
 
 import { getAll, getSingle } from '../../../utils/api';
 import { useMyContext } from '../../../context/Mycontext';
 import axios from 'axios';
 const baseUrl = import.meta.env.VITE_BASE_FILE_URL;
-const AddCategory = () => {
+const AddSubCategory = () => {
     const context = useMyContext()
     const [data, setData] = useState('');
-    const [category, setCategory] = useState('');
+
     const [files, setFiles] = useState([]);
     const [image, setImage] = useState(null);
+    const [formFields, setFormFields] = useState({
+        subCategoryName: '',
+        category: '',
+        image: null,
+    });
+    const [getallcategory, setgetallcategory] = useState([]);
     const handleFilesChange = (uploadedFiles) => {
         const newImages = [];
         setFiles(uploadedFiles);
@@ -29,7 +35,14 @@ const AddCategory = () => {
             reader.readAsDataURL(file);
         }
     };
+    const handleChangeCategory = (e) => {
 
+        const { name, value } = e.target;
+        setFormFields((prevState) => ({
+            ...prevState,
+            [name]: value,
+        }));
+    };
     const handleRemoveImage = () => {
 
         setImage('');
@@ -42,9 +55,6 @@ const AddCategory = () => {
         files.forEach((file, index) => {
             formData.append(`image`, file);  // Append each file with a unique key
         });
-
-        formData.append('name', category);
-
         try {
             const response = await axios.post(`${baseUrl}api/category`, formData, {
                 headers: {
@@ -64,19 +74,64 @@ const AddCategory = () => {
             context.messageBox({ status: 'error', msg: error.response.data.message });
         }
     }
+
+    useEffect(() => {
+        const getAllCategoryFun = async () => {
+            try {
+                const response = await getAll('category');
+                console.log('API Response:', response);
+
+                if (response.success && Array.isArray(response.data.data)) {
+                    setgetallcategory(response.data.data);
+                } else {
+                    context.messageBox({ status: 'error', msg: response.message });
+                }
+            } catch (error) {
+                console.log('Response error:', error);
+                context.messageBox({ status: 'error', msg: error.response?.data?.message || 'Something went wrong' });
+            }
+        };
+
+        getAllCategoryFun();
+    }, []); // Runs only once on component mount.
+
+    useEffect(() => {
+        console.log('Updated getallcategory:', getallcategory);
+    }, [getallcategory]); // Watches for state updates.
+
     return (
         <div className='p-5'>
             <form className='addProduct p-8 py-3 rounded-md shadow-md' onSubmit={handleformSubmit} encType='multiple-part'>
                 <div className='scroll max-h-[70vh]  pr-4'>
                     <div className='col w-[full] mt-5  p-4 '>
-                        <div className='grid grid-cols-2 mb-3'>
-                            <div className='col w-[50%]'>
-                                <h3 className='text-[14px] font-[500] mb-1'>Category Name</h3>
-                                <input type='text' className='w-full h-[40px] border border-[rgba(0,0,0,0.3)] focus:outline-none focus:border-[rgba(0,0,0,0.5)] rounded-sm p-3 text-sm' value={category} onChange={(e) => setCategory(e.target.value)} />
+                        <div className='grid grid-cols-2 mb-3 gap-2'>
+                            <div className='col '>
+                                <h3 className='text-[14px] font-[500] mb-1'>Sub Category Name</h3>
+                                <input type='text' name="subCategoryName" className='w-full h-[40px] border border-[rgba(0,0,0,0.3)] focus:outline-none focus:border-[rgba(0,0,0,0.5)] rounded-sm p-3 text-sm' value={formFields.subCategoryName}
+                                    onChange={handleChangeCategory} />
                             </div>
+                            <div className='col w-[50%]'>
+                                <h3 className='text-[14px] font-[500] mb-1'>Category</h3>
+                                <Select
+                                    className='w-full h-[40px]'
+                                    labelId="productcategory"
+                                    size='small'
+                                    id="productcategory"
+                                    name="category"
+                                    value={formFields.category}
+                                    label="productcategory"
+                                    onChange={handleChangeCategory}
+                                >
+                                    <MenuItem value={''}>None</MenuItem>
+                                    {getallcategory?.map((item) => (
+                                        <MenuItem key={item.id} value={item.name}>
+                                            {item.name}
+                                        </MenuItem>
+                                    ))}
+                                </Select>
 
+                            </div>
                         </div>
-
                         <h3 className='text-[14px] font-[500] mb-1'>Image</h3>
                         <div className="grid grid-cols-2 lg:grid-cols-6 md:grid-cols-6 gap-4">
 
@@ -119,4 +174,4 @@ const AddCategory = () => {
     )
 }
 
-export default AddCategory
+export default AddSubCategory

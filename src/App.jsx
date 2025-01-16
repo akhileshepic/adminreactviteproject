@@ -36,6 +36,8 @@ import { useMyContext } from './context/Mycontext'
 import PrivateRoute from './PrivateRoute'
 import ViewSlider from './Pages/HomeSliderBaners/ViewSlider'
 import EditHomeSlide from './Pages/HomeSliderBaners/EditHomeSlide'
+import SubCategory from './Pages/SubCategory'
+import AddSubCategory from './Pages/SubCategory/AddSubCategory'
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -78,7 +80,13 @@ function App() {
               <Category />
             </PrivateRoute>)
         },
-        // Add more nested routes here
+        {
+          path: "/subcategory/list",
+          element: (
+            <PrivateRoute>
+              <SubCategory />
+            </PrivateRoute>)
+        },
       ]
     },
     {
@@ -123,6 +131,7 @@ function App() {
         {context.isOpenFullScreenPanel?.model === 'Add Category' && <AddCategory />}
         {context.isOpenFullScreenPanel?.model === 'View Slider' && <ViewSlider />}
         {context.isOpenFullScreenPanel?.model === 'Edit Slider' && <EditHomeSlide />}
+        {context.isOpenFullScreenPanel?.model === 'Add Sub Category' && <AddSubCategory />}
 
       </Dialog>
 

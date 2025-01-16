@@ -88,7 +88,7 @@ const Sidebar = () => {
                             </li>
                             <li className='w-full'>
                                 <Link to="/">
-                                    <Button className='!text-[rgba(0,0,0,0.7)] !capitalize !justify-start !w-full !pl-9 flex gap-2'>
+                                    <Button className='!text-[rgba(0,0,0,0.7)] !capitalize !justify-start !w-full !pl-9 flex gap-2' onClick={() => context.setIsOpenFullScreenPanel({ open: true, model: 'Add Product' })}>
                                         <span className='block w-[5px] h-[5px] rounded-full bg-[rgba(0,0,0,0.3)]'></span>
                                         Add Product</Button>
                                 </Link>
@@ -115,10 +115,36 @@ const Sidebar = () => {
                             </li>
                             <li className='w-full'>
                                 <Link to="/">
-                                    <Button className='!text-[rgba(0,0,0,0.7)] !capitalize !justify-start !w-full !pl-9 flex gap-2'>
+                                    <Button className='!text-[rgba(0,0,0,0.7)] !capitalize !justify-start !w-full !pl-9 flex gap-2' onClick={() => context.setIsOpenFullScreenPanel({ open: true, model: 'Add Category' })}>
                                         <span className='block w-[5px] h-[5px] rounded-full bg-[rgba(0,0,0,0.3)]'></span>
                                         Add Category</Button>
                                 </Link>
+                            </li>
+
+                        </ul>
+                    </Collapse>
+
+                </li>
+                <li>
+
+                    <Button className='!w-full !capitalize !text-black !justify-start flex gap-3 !text-[16px] !font-[500] hover:text-black hover:bg-[rgba(0,0,0,0.1)] !py-2' onClick={() => IsOpenSubMenu(4)}><TbCategory className='text-[18px]' /><span>Sub Category</span>
+                        <span className='ml-auto flex items-center justify-center w-[30px] h-[30px]'><IoIosArrowDown className={`transition-all ${subMenuIndex === 4 ? 'rotate-180' : ''}`} /></span>
+                    </Button>
+                    <Collapse isOpened={subMenuIndex === 4 ? true : false}>
+                        <ul className='w-full'>
+                            <li className='w-full'>
+                                <Link to="/subcategory/list">
+                                    <Button className='!text-[rgba(0,0,0,0.7)] !capitalize !justify-start !w-full !pl-9 flex gap-2'>
+                                        <span className='block w-[5px] h-[5px] rounded-full bg-[rgba(0,0,0,0.3)]'></span>
+                                        Sub Category List</Button>
+                                </Link>
+                            </li>
+                            <li className='w-full'>
+                               
+                                    <Button className='!text-[rgba(0,0,0,0.7)] !capitalize !justify-start !w-full !pl-9 flex gap-2' onClick={() => context.setIsOpenFullScreenPanel({ open: true, model: 'Add Sub Category' })}>
+                                        <span className='block w-[5px] h-[5px] rounded-full bg-[rgba(0,0,0,0.3)]'></span>
+                                        Add Sub Category</Button>
+                               
                             </li>
 
                         </ul>
