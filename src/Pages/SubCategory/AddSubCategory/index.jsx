@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { LazyLoadImage } from 'react-lazy-load-image-component'
 
 import { IoMdClose } from "react-icons/io";
@@ -14,26 +14,26 @@ const baseUrl = import.meta.env.VITE_BASE_FILE_URL;
 const AddSubCategory = () => {
     const context = useMyContext()
     const [data, setData] = useState('');
-
-    const [files, setFiles] = useState([]);
-    const [image, setImage] = useState(null);
+    const fileInputRef = useRef(null);
+    const [file, setFile] = useState('');
+    const [image, setImage] = useState('');
     const [formFields, setFormFields] = useState({
         subCategoryName: '',
-        category: '',
-        image: null,
+        category: [],
+
     });
     const [getallcategory, setgetallcategory] = useState([]);
     const handleFilesChange = (uploadedFiles) => {
-        const newImages = [];
-        setFiles(uploadedFiles);
         const file = uploadedFiles[0];
         if (file) {
+            setFile(file); // Save the file in state
             const reader = new FileReader();
             reader.onloadend = () => {
-                setImage(reader.result);
+                setImage(reader.result); // Save the image data URL in state
             };
             reader.readAsDataURL(file);
         }
+        console.log(file)
     };
     const handleChangeCategory = (e) => {
 
@@ -42,30 +42,43 @@ const AddSubCategory = () => {
             ...prevState,
             [name]: value,
         }));
+        console.log(formFields.category, 'onchange')
     };
     const handleRemoveImage = () => {
-
         setImage('');
+        setFile(null); // Clear the file state
+        if (fileInputRef.current) {
+            fileInputRef.current.value = ''; // Clear the file input value
+        }
     };
     const handleformSubmit = async (e) => {
         e.preventDefault();
 
         const formData = new FormData();
 
-        files.forEach((file, index) => {
-            formData.append(`image`, file);  // Append each file with a unique key
+
+        formData.append(`image`, file);
+        formData.append(`name`, formFields.subCategoryName);
+        formFields.category.forEach(category => {
+            formData.append('category[]', category);  // This sends each category as a separate entry
         });
+
+        console.log('formData', formFields)
         try {
-            const response = await axios.post(`${baseUrl}api/category`, formData, {
+            const response = await axios.post(`${baseUrl}api/subcategory`, formData, {
                 headers: {
                     'Accept': 'multipart/form-data',
                     'Authorization': `Bearer ${context.isAuth.accessToken}`, // Replace with your actual token
                 }
             });
-            if (response.status === 200) {
+            if (response.status === 201) {
                 context.messageBox({ status: 'success', msg: response.data.message });
-                setFiles('');
-                setCategory('')
+                setFile('');
+                setFormFields({
+                    subCategoryName: '',
+                    category: [],
+                    image: '',
+                })
                 context.setIsOpenFullScreenPanel({ open: false })
             }
             console.log('Response:', response);
@@ -79,7 +92,6 @@ const AddSubCategory = () => {
         const getAllCategoryFun = async () => {
             try {
                 const response = await getAll('category');
-                console.log('API Response:', response);
 
                 if (response.success && Array.isArray(response.data.data)) {
                     setgetallcategory(response.data.data);
@@ -96,7 +108,7 @@ const AddSubCategory = () => {
     }, []); // Runs only once on component mount.
 
     useEffect(() => {
-        console.log('Updated getallcategory:', getallcategory);
+
     }, [getallcategory]); // Watches for state updates.
 
     return (
@@ -121,10 +133,11 @@ const AddSubCategory = () => {
                                     value={formFields.category}
                                     label="productcategory"
                                     onChange={handleChangeCategory}
+                                    multiple
                                 >
                                     <MenuItem value={''}>None</MenuItem>
                                     {getallcategory?.map((item) => (
-                                        <MenuItem key={item.id} value={item.name}>
+                                        <MenuItem key={item._id} value={item._id}>
                                             {item.name}
                                         </MenuItem>
                                     ))}
@@ -159,7 +172,10 @@ const AddSubCategory = () => {
 
 
 
-                            <UploadBox multiple={false} onFilesChange={handleFilesChange} />
+                            <UploadBox multiple={false}
+                                onFilesChange={handleFilesChange}
+                                fileInputRef={fileInputRef}
+                            />
                         </div>
                     </div>
                 </div>

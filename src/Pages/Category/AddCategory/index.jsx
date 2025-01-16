@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { LazyLoadImage } from 'react-lazy-load-image-component'
 
 import { IoMdClose } from "react-icons/io";
@@ -17,6 +17,7 @@ const AddCategory = () => {
     const [category, setCategory] = useState('');
     const [files, setFiles] = useState([]);
     const [image, setImage] = useState(null);
+    const fileInputRef = useRef(null);
     const handleFilesChange = (uploadedFiles) => {
         const newImages = [];
         setFiles(uploadedFiles);
@@ -31,8 +32,11 @@ const AddCategory = () => {
     };
 
     const handleRemoveImage = () => {
-
         setImage('');
+        setFiles(null); // Clear the file state
+        if (fileInputRef.current) {
+            fileInputRef.current.value = ''; // Clear the file input value
+        }
     };
     const handleformSubmit = async (e) => {
         e.preventDefault();
@@ -55,6 +59,9 @@ const AddCategory = () => {
             if (response.status === 200) {
                 context.messageBox({ status: 'success', msg: response.data.message });
                 setFiles('');
+                if (fileInputRef.current) {
+                    fileInputRef.current.value = ''; // Clear the file input value
+                }
                 setCategory('')
                 context.setIsOpenFullScreenPanel({ open: false })
             }
@@ -104,7 +111,10 @@ const AddCategory = () => {
 
 
 
-                            <UploadBox multiple={false} onFilesChange={handleFilesChange} />
+                            <UploadBox multiple={false}
+                                onFilesChange={handleFilesChange}
+                                fileInputRef={fileInputRef}
+                            />
                         </div>
                     </div>
                 </div>
